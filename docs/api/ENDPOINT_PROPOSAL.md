@@ -39,7 +39,7 @@ Proposed common codes: `invalid_request`, `validation_failed`, `unauthenticated`
 | `GET /universities` | Public | Configured universities and whether student sign-in is enabled. No private contacts. |
 | `GET /universities/{university_id}/faculties` | Public | Selectable faculties. |
 | `GET /faculties/{faculty_id}/departments` | Public | Selectable departments. |
-| `GET /academic-sessions` | Public | Configured current/selectable sessions, or an explicit unavailable response. |
+| `GET /academic-sessions` | Public | Configured sessions with `status` (`proposed`/`confirmed`), calendar dates, and `source` provenance; clients must label proposed sessions provisional, or return an explicit unavailable response when none exist. |
 | `GET /public/dashboard` | Public | Published aggregate data only, with approved filters. Never return finding IDs, lecturer names, student IDs, report text, or supporter details. |
 | `GET /public/dashboard/filters` | Public | Available date range and filter values without revealing suppressed groups. |
 
