@@ -1,8 +1,11 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from vio_backend.database import session_dependency
+from vio_backend.errors import ApiError
 
 router = APIRouter(prefix="/api/v1", tags=["catalogue"])
 
@@ -17,8 +20,8 @@ async def list_universities(session: AsyncSession = Depends(session_dependency))
 async def get_catalogue(short_name: str, session: AsyncSession = Depends(session_dependency)) -> dict:
     result = await session.execute(
         text("""
-            SELECT f.name AS faculty, d.name AS department,
-                   c.code AS course_code, c.title AS course_title, c.level,
+            SELECT f.name AS faculty, d.name AS department, d.id AS department_id,
+                   c.id AS course_id, c.code AS course_code, c.title AS course_title, c.level,
                    ce.semester, ce.is_elective
             FROM universities u
             JOIN faculties f ON f.university_id = u.id
@@ -30,6 +33,34 @@ async def get_catalogue(short_name: str, session: AsyncSession = Depends(session
             ORDER BY f.name, d.name, c.level, c.code, ce.semester
         """),
         {"short_name": short_name},
+    )
+    return {"data": [dict(row) for row in result.mappings().all()]}
+
+
+@router.get("/universities/{short_name}/faculties")
+async def list_faculties(short_name: str, session: AsyncSession = Depends(session_dependency)) -> dict:
+    result = await session.execute(
+        text(
+            """
+            SELECT f.id, f.name FROM faculties f
+            JOIN universities u ON u.id = f.university_id
+            WHERE lower(u.short_name) = lower(:short_name)
+            ORDER BY f.name
+            """
+        ),
+        {"short_name": short_name},
+    )
+    return {"data": [dict(row) for row in result.mappings().all()]}
+
+
+@router.get("/faculties/{faculty_id}/departments")
+async def list_departments(faculty_id: UUID, session: AsyncSession = Depends(session_dependency)) -> dict:
+    faculty = await session.execute(text("SELECT id FROM faculties WHERE id = :id"), {"id": str(faculty_id)})
+    if faculty.first() is None:
+        raise ApiError(404, "not_found", "That faculty was not found.")
+    result = await session.execute(
+        text("SELECT id, name FROM departments WHERE faculty_id = :id ORDER BY name"),
+        {"id": str(faculty_id)},
     )
     return {"data": [dict(row) for row in result.mappings().all()]}
 
