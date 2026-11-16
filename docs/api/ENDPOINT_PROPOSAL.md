@@ -37,7 +37,7 @@ Proposed common codes: `invalid_request`, `validation_failed`, `unauthenticated`
 | Method and path | Auth | Behavior |
 | --- | --- | --- |
 | `GET /universities` | Public | Configured universities and whether student sign-in is enabled. No private contacts. |
-| `GET /universities/{university_id}/faculties` | Public | Selectable faculties. |
+| `GET /universities/{short_name}/faculties` | Public | Selectable faculties. Implemented using `short_name` to match `/universities/{short_name}/catalogue`. |
 | `GET /faculties/{faculty_id}/departments` | Public | Selectable departments. |
 | `GET /academic-sessions` | Public | Configured sessions with `status` (`proposed`/`confirmed`), calendar dates, and `source` provenance; clients must label proposed sessions provisional, or return an explicit unavailable response when none exist. |
 | `GET /public/dashboard` | Public | Published aggregate data only, with approved filters. Never return finding IDs, lecturer names, student IDs, report text, or supporter details. |
@@ -69,7 +69,8 @@ Dimensions, labels, and the small-group threshold require approval. The seed thr
 | `GET /student/profile` | Student | Department, level, confirmed session, verification state, and available next actions. |
 | `PUT /student/profile` | Student | Set department and level from configured catalogue. |
 | `POST /student/profile/confirm-session` | Student | Body `{ "academic_session": "2026/2027" }`; reconfirm current department/level. |
-| `GET /student/courses?academic_session=...` | Student | Only courses the backend can verify this student is registered for. Registration synchronization is a school-integration dependency. |
+| `GET /student/courses?academic_session=...` | Student | Courses the student has registered for the current academic session. Interim behavior (2026-11-16): self-declared registrations only; every row is marked `verification_status: "self_declared_unverified"`. Registration synchronization remains a school-integration dependency. |
+| `PUT /student/courses` | Student | Body `{ "academic_session": "2026/2027", "course_ids": ["uuid"] }`. Replaces the student's self-declared registrations for the current session; requires completed profile and confirmed session; every course must belong to the student's department. Interim, unverified pending a real registration source. |
 
 Example `GET /auth/session` response:
 
