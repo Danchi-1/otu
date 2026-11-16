@@ -41,6 +41,11 @@ BEGIN
     RAISE EXCEPTION 'academic_sessions table is missing';
   END IF;
 
+  IF to_regclass('public.email_challenges') IS NULL
+     OR to_regclass('public.student_sessions') IS NULL THEN
+    RAISE EXCEPTION 'email_challenges or student_sessions table is missing';
+  END IF;
+
   IF NOT EXISTS (
     SELECT 1 FROM academic_sessions
     WHERE session = '2026/2027'

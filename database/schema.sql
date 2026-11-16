@@ -189,11 +189,14 @@ CREATE TABLE routing_steps (
 -- identity_hash = HMAC-SHA256(server_secret, normalised school email).
 -- The raw email is NOT stored. It enforces one account per student.
 -- department_id / level are self-declared and weighed by the timetable check.
+-- Both are nullable because the account is created right after email
+-- verification, before profile setup; they also cannot be required yet since
+-- the course catalogue is not currently seeded (see docs/DECISIONS.md).
 CREATE TABLE student_accounts (
   id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   university_id uuid NOT NULL REFERENCES universities(id),
-  department_id uuid NOT NULL REFERENCES departments(id),
-  level         smallint NOT NULL,
+  department_id uuid REFERENCES departments(id),
+  level         smallint CHECK (level IS NULL OR level IN (100, 200, 300, 400, 500, 600)),
   identity_hash bytea NOT NULL,
   status        account_status NOT NULL DEFAULT 'active',
   confirmed_session text,                         -- department/level re-confirmed each session
@@ -210,6 +213,38 @@ CREATE TABLE student_verifications (
   verified_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE (student_id, factor)
 );
+
+-- One-time email verification codes. The raw email address is never stored;
+-- only an HMAC of it (identity_hash), so a challenge row alone cannot be used
+-- to recover who it was sent to. The raw code is likewise never stored, only
+-- its HMAC (code_hash), compared in constant time at verification.
+CREATE TABLE email_challenges (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  university_id uuid NOT NULL REFERENCES universities(id) ON DELETE CASCADE,
+  identity_hash bytea NOT NULL,
+  code_hash     bytea NOT NULL,
+  attempts      smallint NOT NULL DEFAULT 0,
+  max_attempts  smallint NOT NULL DEFAULT 5,
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  expires_at    timestamptz NOT NULL,
+  consumed_at   timestamptz,                      -- set once successfully verified; cannot be reused after this
+  CHECK (attempts <= max_attempts),
+  CHECK (expires_at > created_at)
+);
+CREATE INDEX email_challenges_identity_idx ON email_challenges (university_id, identity_hash, created_at);
+
+-- Session cookies are opaque random tokens; only their HMAC is stored, so a
+-- leaked database row cannot be replayed as a cookie value.
+CREATE TABLE student_sessions (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id  uuid NOT NULL REFERENCES student_accounts(id) ON DELETE CASCADE,
+  token_hash  bytea NOT NULL UNIQUE,
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  expires_at  timestamptz NOT NULL,
+  revoked_at  timestamptz,
+  CHECK (expires_at > created_at)
+);
+CREATE INDEX student_sessions_student_idx ON student_sessions (student_id);
 
 -- Which courses a student is registered for this session.
 -- Only registered students may report on / confirm a course.
