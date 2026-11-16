@@ -26,6 +26,7 @@ dev = [
 vio-catalogue-harvest = "vio_backend.catalogue_harvest:main"
 vio-mts-synopsis = "vio_backend.mts_course_synopsis:main"
 vio-funaab-synopsis = "vio_backend.funaab_synopsis:main"
+vio-synopsis-seed = "vio_backend.synopsis_seed:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
