@@ -299,3 +299,84 @@ async def get_latest_academic_session(
     )
     row = result.first()
     return AcademicSessionInfo(session=row[0], status=row[1]) if row else None
+
+
+async def courses_in_department(
+    session: AsyncSession,
+    department_id: str,
+    course_ids: list[str],
+) -> set[str]:
+    if not course_ids:
+        return set()
+    result = await session.execute(
+        text(
+            """
+            SELECT id FROM courses
+            WHERE department_id = :department_id AND id = ANY(:course_ids)
+            """
+        ),
+        {"department_id": str(department_id), "course_ids": [str(course_id) for course_id in course_ids]},
+    )
+    return {str(row["id"]) for row in result.mappings().all()}
+
+
+async def replace_course_registrations(
+    session: AsyncSession,
+    student_id: str,
+    academic_session: str,
+    course_ids: list[str],
+) -> None:
+    await session.execute(
+        text(
+            "DELETE FROM student_course_registrations WHERE student_id = :student_id AND academic_session = :academic_session"
+        ),
+        {"student_id": str(student_id), "academic_session": academic_session},
+    )
+    for course_id in course_ids:
+        await session.execute(
+            text(
+                """
+                INSERT INTO student_course_registrations (student_id, course_id, academic_session)
+                VALUES (:student_id, :course_id, :academic_session)
+                ON CONFLICT DO NOTHING
+                """
+            ),
+            {
+                "student_id": str(student_id),
+                "course_id": str(course_id),
+                "academic_session": academic_session,
+            },
+        )
+
+
+async def list_course_registrations(
+    session: AsyncSession,
+    student_id: str,
+    academic_session: str,
+) -> list[dict]:
+    result = await session.execute(
+        text(
+            """
+            SELECT c.id AS course_id, c.code, c.title, c.level,
+                   d.name AS department, r.academic_session
+            FROM student_course_registrations r
+            JOIN courses c ON c.id = r.course_id
+            JOIN departments d ON d.id = c.department_id
+            WHERE r.student_id = :student_id AND r.academic_session = :academic_session
+            ORDER BY c.code
+            """
+        ),
+        {"student_id": str(student_id), "academic_session": academic_session},
+    )
+    return [
+        {
+            "course_id": str(row["course_id"]),
+            "course_code": row["code"],
+            "course_title": row["title"],
+            "level": row["level"],
+            "department": row["department"],
+            "academic_session": row["academic_session"],
+            "verification_status": "self_declared_unverified",
+        }
+        for row in result.mappings().all()
+    ]
