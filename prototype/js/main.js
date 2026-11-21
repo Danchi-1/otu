@@ -1,4 +1,38 @@
 // VIO — mobile menu toggle
+
+// VIO Report Form
+const reportForm = document.getElementById("reportForm");
+const formMessage = document.getElementById("formMessage");
+
+if (reportForm) {
+    reportForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const category = document.getElementById("category").value;
+        const course = document.getElementById("course").value;
+        const description = document.getElementById("description").value;
+        const anonymous = document.getElementById("anonymous").checked;
+
+        if (description.trim().length < 20) {
+            formMessage.textContent = "Please provide at least 20 characters.";
+            return;
+        }
+
+        const report = {
+            category: category,
+            course: course,
+            description: description,
+            anonymous: anonymous
+        };
+
+        console.log("VIO Report:", report);
+
+        formMessage.textContent =
+            "Your report has been received for this demo.";
+
+        reportForm.reset();
+    });
+}
 (function () {
   var nav = document.querySelector(".nav");
   var toggle = document.querySelector(".nav__toggle");

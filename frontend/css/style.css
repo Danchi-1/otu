@@ -1,3 +1,4 @@
+
 * {
     margin: 0;
     padding: 0;
@@ -10,237 +11,351 @@ html {
 
 body {
     font-family: Arial, sans-serif;
-    background: #f7f9fc;
-    color: #10243a;
+    background: #f5f7fa;
+    color: #10243f;
     line-height: 1.6;
 }
 
-/* Navigation */
-header {
-    background: #ffffff;
-    padding: 20px 8%;
-}
-
 .navbar {
+    background: white;
+    padding: 18px 8%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
 }
 
 .logo {
-    font-size: 28px;
-    font-weight: bold;
-    color: #10243a;
+    font-size: 30px;
+    font-weight: 800;
+    color: #10243f;
     text-decoration: none;
 }
 
-.logo span,
-.hero h1 span {
-    color: #13a89e;
+.logo span {
+    color: #078f8e;
 }
 
-.nav-links {
+nav {
     display: flex;
-    list-style: none;
-    gap: 30px;
+    gap: 25px;
 }
 
-.nav-links a {
+nav a {
     text-decoration: none;
-    color: #43546a;
-    font-size: 14px;
+    color: #10243f;
+    font-weight: 600;
 }
 
-.nav-links a:hover {
-    color: #13a89e;
+nav a:hover {
+    color: #078f8e;
 }
 
-.nav-button,
-.primary-button {
-    background: #13a89e;
+.ticker {
+    overflow: hidden;
+    background: #25aef0;
     color: white;
-    padding: 13px 22px;
-    border-radius: 6px;
-    text-decoration: none;
+    padding: 11px 0;
+    white-space: nowrap;
+}
+
+.ticker-text {
     display: inline-block;
+    font-weight: bold;
+    animation: moveTicker 22s linear infinite;
 }
 
-.nav-button:hover,
-.primary-button:hover {
-    background: #0d817a;
+@keyframes moveTicker {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
 }
 
-/* Hero section */
 .hero {
-    min-height: 520px;
+    min-height: 510px;
     padding: 90px 10%;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 50px;
-    background: #edf5f7;
+    align-items: center;
+    background-color: #f5f7fa;
+    background-image: radial-gradient(#dce4ed 1px, transparent 1px);
+    background-size: 22px 22px;
 }
 
 .hero-content {
-    max-width: 600px;
+    max-width: 620px;
 }
 
-.tagline {
-    color: #13a89e;
-    font-size: 13px;
+.eyebrow {
+    color: #078f8e;
     font-weight: bold;
     letter-spacing: 2px;
+    font-size: 12px;
 }
 
 .hero h1 {
-    font-size: 52px;
-    line-height: 1.2;
+    font-size: clamp(42px, 6vw, 68px);
+    line-height: 1.12;
     margin: 20px 0;
+}
+
+.hero h1 span {
+    color: #078f8e;
 }
 
 .hero-content p {
     color: #64748b;
-    max-width: 480px;
+    max-width: 500px;
     margin-bottom: 30px;
 }
-.hero-buttons {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-}
 
-.secondary-button {
-    padding: 13px 22px;
-    border: 1px solid #13a89e;
-    color: #13a89e;
-    border-radius: 6px;
+.primary-button {
+    display: inline-block;
+    background: #078f8e;
+    color: white;
+    padding: 14px 25px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
     text-decoration: none;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.hero-card {
+.primary-button:hover {
+    background: #056d6c;
+    transform: translateY(-2px);
+}
+
+.hero-icons {
+    display: grid;
+    grid-template-columns: repeat(2, 90px);
+    gap: 20px;
+}
+
+.floating-icon {
     background: white;
-    padding: 40px;
-    border-radius: 15px;
-    max-width: 300px;
-    box-shadow: 0 10px 35px rgba(16, 36, 58, 0.08);
+    width: 85px;
+    height: 85px;
+    border-radius: 20px;
+    display: grid;
+    place-items: center;
+    font-size: 35px;
+    box-shadow: 0 8px 25px rgba(16,36,63,0.1);
+    animation: float 3s ease-in-out infinite alternate;
 }
 
-.card-icon {
-    color: #13a89e;
-    font-size: 40px;
-    margin-bottom: 15px;
+.floating-icon:nth-child(even) {
+    animation-delay: 1s;
 }
 
-/* About section */
-.about,
-.how-it-works {
-    padding: 80px 10%;
-    text-align: center;
+@keyframes float {
+    to { transform: translateY(-12px); }
 }
 
-.about h2,
-.how-it-works h2 {
-    font-size: 34px;
-    margin: 15px 0;
+.how-section,
+.dashboard-section,
+.report-section,
+.recent-reports {
+    padding: 70px 10%;
 }
 
-.about p {
-    max-width: 650px;
-    margin: auto;
+.how-section,
+.dashboard-section,
+.recent-reports {
+    background: white;
+}
+
+h2 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.section-intro {
+    color: #64748b;
+    margin-bottom: 30px;
+}
+
+.steps,
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin-top: 30px;
+}
+
+.step-card,
+.dashboard-card {
+    background: #f5f7fa;
+    padding: 28px;
+    border-radius: 14px;
+    border: 1px solid #e5eaf0;
+}
+
+.step-card span {
+    color: #078f8e;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.step-card h3 {
+    margin: 12px 0;
+}
+
+.step-card p,
+.dashboard-card p {
     color: #64748b;
 }
 
-/* How it works */
-.steps {
-    display: flex;
-    gap: 25px;
-    margin-top: 40px;
-    text-align: left;
+.dashboard-card h3 {
+    font-size: 35px;
+    color: #078f8e;
+    margin-top: 10px;
 }
 
-.step {
-    flex: 1;
+.report-section {
+    background: #f5f7fa;
+}
+
+form {
+    max-width: 650px;
     background: white;
     padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(16,36,63,0.06);
+}
+
+form label {
+    display: block;
+    font-weight: bold;
+    margin: 18px 0 7px;
+}
+
+form input:not([type="checkbox"]),
+form select,
+form textarea {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #d9e0e8;
+    border-radius: 7px;
+    font: inherit;
+    background: white;
+}
+
+form textarea {
+    resize: vertical;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+    outline: 2px solid #078f8e;
+    border-color: transparent;
+}
+
+.anonymous-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: normal;
+}
+
+#formMessage {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #078f8e;
+}
+
+.report-list {
+    display: grid;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.report-item {
+    padding: 20px;
+    border: 1px solid #e5eaf0;
     border-radius: 10px;
-    box-shadow: 0 5px 20px rgba(16, 36, 58, 0.05);
+    background: #f9fbfd;
 }
 
-.step h3 {
-    margin-bottom: 12px;
-    color: #13a89e;
+.report-item h3 {
+    color: #078f8e;
+    margin-bottom: 8px;
 }
 
-.step p {
-    color: #64748b;
+.report-item p {
+    margin: 5px 0;
+    overflow-wrap: anywhere;
 }
 
-/* Submit section */
-.submit {
+.review-status {
+    display: inline-block;
+    margin-top: 10px;
+    color: #946200;
+    background: #fff2cc;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+footer {
+    background: #10243f;
+    color: white;
     text-align: center;
-    padding: 70px 20px;
-    background: #10243a;
+    padding: 35px;
+}
+
+footer .logo {
     color: white;
 }
 
-.submit h2 {
-    font-size: 30px;
-    margin-bottom: 12px;
-}
-
-.submit p {
-    color: #cbd5e1;
-    margin-bottom: 25px;
-}
-
-/* Footer */
-footer {
-    padding: 35px 10%;
-    text-align: center;
-    background: white;
-}
-
-footer p {
-    color: #64748b;
+.footer-note {
+    color: #aab8c8;
+    font-size: 13px;
     margin-top: 8px;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-    header {
-        padding: 18px 5%;
-    }
-
+@media (max-width: 750px) {
     .navbar {
-        flex-wrap: wrap;
-        gap: 20px;
+        flex-direction: column;
+        gap: 12px;
     }
 
-    .nav-links {
-        gap: 15px;
+    nav {
         flex-wrap: wrap;
-    }
-
-    .nav-button {
-        display: none;
+        justify-content: center;
+        gap: 13px;
+        font-size: 13px;
     }
 
     .hero {
-        padding: 60px 7%;
         flex-direction: column;
-        align-items: flex-start;
+        text-align: center;
+        gap: 40px;
+        padding: 65px 7%;
     }
 
-    .hero h1 {
-        font-size: 38px;
+    .hero-content p {
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    .steps {
-        flex-direction: column;
+    .steps,
+    .dashboard-cards {
+        grid-template-columns: 1fr;
     }
 
-    .about,
-    .how-it-works {
-        padding: 60px 7%;
+    .how-section,
+    .dashboard-section,
+    .report-section,
+    .recent-reports {
+        padding: 50px 7%;
+    }
+
+    form {
+        padding: 20px;
     }
 }
