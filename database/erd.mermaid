@@ -1,4 +1,5 @@
 erDiagram
+  universities ||--o{ academic_sessions : defines
   universities ||--o{ faculties : has
   faculties ||--o{ departments : has
   departments ||--o{ courses : owns
@@ -17,8 +18,11 @@ erDiagram
   universities ||--o{ student_accounts : enrols
   departments ||--o{ student_accounts : declared_in
   student_accounts ||--o{ student_verifications : has
+  student_accounts ||--o{ student_sessions : maintains
+  universities ||--o{ email_challenges : issues
   student_accounts ||--o{ student_course_registrations : registers
   courses ||--o{ student_course_registrations : registered_in
+  student_accounts ||--o{ anomaly_signals : flagged_by
 
   courses ||--o{ findings : subject_of
   timetable_slots ||--o{ findings : slot_of
@@ -27,12 +31,12 @@ erDiagram
   reports ||--o{ report_evidence : has
   findings ||--o{ finding_confirmations : confirmed_by
   student_accounts ||--o{ finding_confirmations : confirms
+  findings ||--o{ finding_scores : scored_as
 
-  findings ||--o{ ai_reviews : reviewed_by_model
-  findings ||--o{ moderation_log : logged_in
-  moderators ||--o{ moderation_log : acts
-  ai_reviews ||--o{ moderation_log : informs
-  moderators ||--o{ findings : reviews
+  model_registry ||--o{ eval_runs : evaluated_in
+  model_registry ||--o{ panel_votes : casts
+  findings ||--o{ appeals : appealed_in
+  findings ||--o{ decision_log : recorded_in
 
   courses ||--o{ class_notices : announced_for
   lecturers ||--o{ class_notices : posts
@@ -48,6 +52,24 @@ erDiagram
     text name
     text short_name
     citext email_domain
+  }
+  academic_sessions {
+    uuid id PK
+    uuid university_id FK
+    text session
+    calendar_status status
+    date returning_registration_starts
+    date fresh_registration_starts
+    date first_semester_lectures_start
+    date first_semester_lectures_end
+    date first_semester_exams_start
+    date first_semester_exams_end
+    date second_semester_lectures_start
+    date second_semester_lectures_end
+    date second_semester_exams_start
+    date second_semester_exams_end
+    date session_ends
+    text source
   }
   faculties {
     uuid id PK
@@ -121,6 +143,7 @@ erDiagram
     smallint level
     bytea identity_hash
     account_status status
+    text confirmed_session
     timestamptz created_at
   }
   student_verifications {
@@ -130,6 +153,25 @@ erDiagram
     boolean passed
     numeric score
     timestamptz verified_at
+  }
+  email_challenges {
+    uuid id PK
+    uuid university_id FK
+    bytea identity_hash
+    bytea code_hash
+    smallint attempts
+    smallint max_attempts
+    timestamptz created_at
+    timestamptz expires_at
+    timestamptz consumed_at
+  }
+  student_sessions {
+    uuid id PK
+    uuid student_id FK
+    bytea token_hash
+    timestamptz created_at
+    timestamptz expires_at
+    timestamptz revoked_at
   }
   student_course_registrations {
     uuid student_id PK
@@ -145,6 +187,40 @@ erDiagram
     numeric value
     text note
   }
+  model_registry {
+    uuid id PK
+    panel_role role
+    text provider
+    text model
+    text version
+    text prompt_version
+    boolean is_active
+    timestamptz created_at
+  }
+  circuit_breakers {
+    text name PK
+    breaker_state state
+    text reason
+    timestamptz tripped_at
+    timestamptz reset_after
+  }
+  golden_cases {
+    uuid id PK
+    golden_label label
+    jsonb payload
+    vote_verdict expected
+    timestamptz created_at
+  }
+  eval_runs {
+    uuid id PK
+    eval_source source
+    uuid model_id FK
+    numeric precision_score
+    numeric recall_score
+    jsonb per_label
+    boolean passed
+    timestamptz ran_at
+  }
   findings {
     uuid id PK
     uuid course_id FK
@@ -153,8 +229,10 @@ erDiagram
     uuid slot_id FK
     finding_status status
     text public_summary
-    uuid reviewed_by FK
-    timestamptz reviewed_at
+    smallint clearance_tier
+    timestamptz held_until
+    timestamptz cleared_at
+    timestamptz created_at
   }
   reports {
     uuid id PK
@@ -180,30 +258,60 @@ erDiagram
     text sha256
     boolean metadata_stripped
     timestamptz delete_after
+    timestamptz created_at
   }
-  moderators {
+  panel_votes {
     uuid id PK
-    citext email
-    text display_name
-    boolean is_active
-  }
-  ai_reviews {
-    uuid id PK
-    uuid finding_id FK
-    text model
-    ai_verdict verdict
+    text subject_type
+    uuid subject_id
+    smallint round
+    panel_role role
+    uuid model_id FK
+    vote_verdict verdict
     numeric confidence
     jsonb reasons
+    timestamptz created_at
   }
-  moderation_log {
+  anomaly_signals {
+    uuid id PK
+    uuid student_id FK
+    text kind
+    numeric severity
+    jsonb detail
+    timestamptz created_at
+  }
+  finding_scores {
     uuid id PK
     uuid finding_id FK
+    text formula_version
+    numeric score
+    integer supporters
+    jsonb breakdown
+    timestamptz computed_at
+  }
+  decision_log {
+    bigserial id PK
+    uuid finding_id FK
+    text stage
     text actor
-    uuid moderator_id FK
-    uuid ai_review_id FK
-    text action
-    text note
+    text decision
+    jsonb details
+    bytea prev_hash
+    bytea entry_hash
     timestamptz created_at
+  }
+  appeals {
+    uuid id PK
+    uuid finding_id FK
+    appellant_kind appellant
+    uuid lecturer_id FK
+    uuid authority_id FK
+    uuid report_id FK
+    text body
+    appeal_status status
+    smallint round
+    timestamptz created_at
+    timestamptz decided_at
   }
   class_notices {
     uuid id PK
@@ -213,6 +321,7 @@ erDiagram
     date for_date
     timestamptz new_start
     text note
+    timestamptz posted_at
   }
   lecturer_replies {
     uuid id PK
@@ -229,6 +338,7 @@ erDiagram
     smallint step_order
     delivery_status status
     bytea token_hash
+    timestamptz queued_at
     timestamptz sent_at
     timestamptz viewed_at
     timestamptz acknowledged_at
