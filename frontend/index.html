@@ -1,98 +1,154 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIO - Voice It Out</title>
+    <title>VIO | Voice It Out</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <header>
-        <nav class="navbar">
-            <a href="#" class="logo">VIO<span>.</span></a>
+    <header class="navbar">
+        <a href="#home" class="logo">VIO<span>.</span></a>
 
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#how-it-works">How It Works</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-
-            <a href="#submit" class="nav-button">Voice Your Concern</a>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#how-it-works">How it works</a>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#submit">Submit a report</a>
         </nav>
     </header>
+
+    <div class="ticker">
+        <div class="ticker-text">
+            EVERY STUDENT DESERVES TO BE HEARD.
+            &nbsp;&nbsp; YOUR VOICE MATTERS.
+            &nbsp;&nbsp; SPEAK UP. MAKE A DIFFERENCE.
+            &nbsp;&nbsp; EVERY STUDENT DESERVES TO BE HEARD.
+        </div>
+    </div>
 
     <main>
         <section class="hero" id="home">
             <div class="hero-content">
-                <span class="tagline">YOUR VOICE MATTERS</span>
-
-                <h1>Every Student<br>Deserves to Be <span>Heard.</span></h1>
-
+                <span class="eyebrow">STUDENT VOICE. ACADEMIC ACCOUNTABILITY.</span>
+                <h1>Your Voice Deserves<br>to Be <span>Heard.</span></h1>
                 <p>
-                    A platform where students can share academic concerns
-                    and contribute to a better university experience.
+                    VIO gives students a safe way to raise academic
+                    concerns and contribute to positive change.
                 </p>
-
-                <div class="hero-buttons">
-                    <a href="#submit" class="primary-button">Submit Feedback</a>
-                    <a href="#about" class="secondary-button">Learn More</a>
-                </div>
+                <a href="#submit" class="primary-button">Share Your Concern</a>
             </div>
 
-            <div class="hero-card">
-                <div class="card-icon">✦</div>
-                <h3>Your Voice. Your Impact.</h3>
-                <p>Speak up responsibly. Help improve the student experience.</p>
+            <div class="hero-icons">
+                <div class="floating-icon">📚</div>
+                <div class="floating-icon">🎓</div>
+                <div class="floating-icon">🛡️</div>
+                <div class="floating-icon">✍️</div>
             </div>
         </section>
 
-        <section class="about" id="about">
-            <span class="tagline">ABOUT VIO</span>
-            <h2>Making student feedback count.</h2>
-            <p>
-                VIO provides a structured way for students to communicate
-                academic challenges, share feedback, and encourage
-                constructive improvements.
-            </p>
-        </section>
-
-        <section class="how-it-works" id="how-it-works">
-            <span class="tagline">THE PROCESS</span>
-            <h2>How It Works</h2>
+        <section class="how-section" id="how-it-works">
+            <h2>How VIO Works</h2>
+            <p class="section-intro">Your voice can help improve the academic experience.</p>
 
             <div class="steps">
-                <div class="step">
-                    <h3>01. Share</h3>
-                    <p>Submit your academic feedback through the platform.</p>
-                </div>
+                <article class="step-card">
+                    <span>01</span>
+                    <h3>Speak Up</h3>
+                    <p>Share an academic concern through the reporting form.</p>
+                </article>
 
-                <div class="step">
-                    <h3>02. Review</h3>
-                    <p>Reports go through an appropriate review process.</p>
-                </div>
+                <article class="step-card">
+                    <span>02</span>
+                    <h3>Review</h3>
+                    <p>Reports can be reviewed and checked before action is taken.</p>
+                </article>
 
-                <div class="step">
-                    <h3>03. Improve</h3>
-                    <p>Verified concerns can support constructive action.</p>
-                </div>
+                <article class="step-card">
+                    <span>03</span>
+                    <h3>Create Change</h3>
+                    <p>Verified concerns can help encourage accountability.</p>
+                </article>
             </div>
         </section>
 
-        <section class="submit" id="submit">
-            <h2>Ready to make your voice heard?</h2>
-            <p>Your feedback can contribute to a better academic environment.</p>
-            <a href="#" class="primary-button">Get Started</a>
+        <section class="dashboard-section" id="dashboard">
+            <h2>VIO Dashboard</h2>
+            <p class="section-intro">A snapshot of the demonstration reports.</p>
+
+            <div class="dashboard-cards">
+                <article class="dashboard-card">
+                    <p>Total Reports</p>
+                    <h3 id="totalReports">0</h3>
+                </article>
+
+                <article class="dashboard-card">
+                    <p>Under Review</p>
+                    <h3 id="pendingReports">0</h3>
+                </article>
+
+                <article class="dashboard-card">
+                    <p>Reviewed</p>
+                    <h3 id="reviewedReports">0</h3>
+                </article>
+            </div>
+        </section>
+
+        <section class="report-section" id="submit">
+            <h2>Share Your Academic Concern</h2>
+            <p class="section-intro">
+                Help us understand the academic challenges students face.
+            </p>
+
+            <form id="reportForm">
+                <label for="category">Report Category</label>
+                <select id="category" required>
+                    <option value="">Choose a category</option>
+                    <option value="Missed Lectures">Missed Lectures</option>
+                    <option value="Incomplete Course Coverage">Incomplete Course Coverage</option>
+                    <option value="Teaching Quality">Teaching Quality</option>
+                    <option value="Assessment Concerns">Assessment Concerns</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label for="course">Course Code</label>
+                <input type="text" id="course" placeholder="e.g. CSC301">
+
+                <label for="incidentDate">Date of Incident</label>
+                <input type="date" id="incidentDate" required>
+
+                <label for="description">Describe Your Concern</label>
+                <textarea id="description" rows="5"
+                    placeholder="Explain what happened..." required minlength="20"></textarea>
+
+                <label class="anonymous-option">
+                    <input type="checkbox" id="anonymous" checked>
+                    Do not display my name publicly
+                </label>
+
+                <button type="submit" class="primary-button">Submit Report</button>
+
+                <p id="formMessage" role="status"></p>
+            </form>
+        </section>
+
+        <section class="recent-reports">
+            <h2>Recent Demo Reports</h2>
+            <div id="reportList" class="report-list">
+                <p>No reports submitted yet.</p>
+            </div>
         </section>
     </main>
 
-    <footer id="contact">
-        <a href="#" class="logo">VIO<span>.</span></a>
+    <footer>
+        <a href="#home" class="logo">VIO<span>.</span></a>
         <p>Every Student Deserves to Be Heard.</p>
-        <p>&copy; 2026 VIO. All rights reserved.</p>
+        <p class="footer-note">Hackathon demonstration prototype.</p>
     </footer>
 
+    <script src="js/config.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
