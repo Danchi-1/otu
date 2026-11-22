@@ -63,3 +63,32 @@ def test_unknown_route_is_not_found():
         response = client.get("/api/v1/does-not-exist")
     assert response.status_code == 404
     assert response.json()["error"]["code"] == "not_found"
+
+
+def test_report_options_fail_closed_without_database_configuration():
+    with TestClient(app) as client:
+        response = client.get("/api/v1/student/report-options")
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "service_unavailable"
+
+
+def test_submit_report_fails_closed_without_database_configuration():
+    with TestClient(app) as client:
+        response = client.post(
+            "/api/v1/student/reports",
+            json={
+                "course_id": "00000000-0000-0000-0000-000000000000",
+                "incident_date": "2026-10-12",
+                "category": "class_not_held",
+                "description": "The lecturer did not hold the class on the scheduled date.",
+            },
+        )
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "service_unavailable"
+
+
+def test_list_reports_fails_closed_without_database_configuration():
+    with TestClient(app) as client:
+        response = client.get("/api/v1/student/reports")
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "service_unavailable"

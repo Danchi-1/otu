@@ -6,7 +6,7 @@ from sqlalchemy import text
 from vio_backend.config import Settings
 from vio_backend.database import make_engine, make_session_factory
 from vio_backend.errors import register_error_handlers
-from vio_backend.routers import auth, catalogue, student
+from vio_backend.routers import auth, catalogue, reports, student
 
 
 @asynccontextmanager
@@ -29,6 +29,7 @@ register_error_handlers(app)
 app.include_router(catalogue.router)
 app.include_router(auth.router)
 app.include_router(student.router)
+app.include_router(reports.router)
 
 
 @app.get("/health/live", tags=["health"])
