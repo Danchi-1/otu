@@ -31,6 +31,13 @@ class Settings:
     challenge_max_per_hour: int
     session_ttl_days: int
     api_prefix: str = "/api/v1"
+    # Groq free-tier model panel. No paid fallback: if the key is missing or
+    # Groq returns quota/auth errors, report intake fails closed.
+    groq_api_key: str | None = None
+    groq_base_url: str = "https://api.groq.com/openai/v1"
+    groq_timeout_seconds: float = 20.0
+    groq_extractor_model: str = "openai/gpt-oss-20b"
+    groq_safety_model: str = "openai/gpt-oss-safeguard-20b"
 
     @classmethod
     def from_environment(cls) -> "Settings":
@@ -48,4 +55,9 @@ class Settings:
             challenge_max_attempts=_int_env("EMAIL_CHALLENGE_MAX_ATTEMPTS", 5),
             challenge_max_per_hour=_int_env("EMAIL_CHALLENGE_MAX_PER_HOUR", 5),
             session_ttl_days=_int_env("STUDENT_SESSION_TTL_DAYS", 30),
+            groq_api_key=os.getenv("GROQ_API_KEY"),
+            groq_base_url=os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1"),
+            groq_timeout_seconds=float(os.getenv("GROQ_TIMEOUT_SECONDS", "20")),
+            groq_extractor_model=os.getenv("GROQ_EXTRACTOR_MODEL", "openai/gpt-oss-20b"),
+            groq_safety_model=os.getenv("GROQ_SAFETY_MODEL", "openai/gpt-oss-safeguard-20b"),
         )
