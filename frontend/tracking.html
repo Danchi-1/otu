@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8fb">
+  <meta name="description" content="View the private status of your VIO report.">
+  <title>Report status — VIO</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="app-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="preview-bar">
+    <span class="preview-bar__dot" aria-hidden="true"></span>
+    <span>Private report status</span>
+    <span class="preview-bar__divider" aria-hidden="true"></span>
+    <span>Only the signed-in report owner can view these details.</span>
+  </div>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="VIO home">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M7 8.5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H15l-5.5 4v-4H7a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2Z" fill="currentColor"/><path d="m11 15.5 3.2 3.2 6.8-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>VIO<span class="brand__period">.</span></span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="primaryNav" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
+      <nav class="primary-nav" id="primaryNav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="about.html">Our approach</a>
+      </nav>
+      <a class="button button--small button--dark header-cta" href="student.html">My VIO</a>
+    </div>
+  </header>
+
+  <main class="app-main" id="main">
+    <p class="app-topline">Your VIO · Private status</p>
+    <div class="app-title-row">
+      <div>
+        <h1>Your report status.</h1>
+        <p>This page shows information returned by VIO for your account. It is not a public report or a judgment about a person.</p>
+      </div>
+      <a class="app-link" href="student.html">← Back to your space</a>
+    </div>
+
+    <div class="app-alert app-alert--error" id="trackingError" role="alert" hidden></div>
+    <section class="app-panel tracking-panel" id="trackingLoading" aria-live="polite">
+      <div class="app-empty">
+        <span class="app-empty__icon" aria-hidden="true">…</span>
+        <h2>Loading your report</h2>
+        <p>VIO is verifying your account and retrieving the private status.</p>
+      </div>
+    </section>
+    <section class="app-panel tracking-panel" id="trackingMissing" hidden>
+      <div class="app-empty">
+        <span class="app-empty__icon" aria-hidden="true">?</span>
+        <h2>No report selected</h2>
+        <p>Open this page from your student space or use the private link you saved after submitting.</p>
+        <a class="button button--primary report-action" href="student.html">Go to your student space</a>
+      </div>
+    </section>
+    <div id="trackingContent" hidden>
+      <section class="app-panel" aria-labelledby="trackingSummaryHeading">
+        <div class="app-panel__heading tracking-heading">
+          <div>
+            <span class="app-status" id="trackingStatus"></span>
+            <h2 id="trackingSummaryHeading">Report summary</h2>
+            <p id="trackingCourse"></p>
+          </div>
+          <span class="tracking-date-label">Incident date <strong id="trackingDate"></strong></span>
+        </div>
+        <div class="app-panel__body tracking-body">
+          <div class="privacy-note" id="trackingStatusNote"></div>
+          <section class="tracking-summary" id="publicSummarySection" hidden>
+            <h3>Current safe summary</h3>
+            <p id="publicSummary"></p>
+          </section>
+          <section class="tracking-summary" aria-labelledby="reportTextHeading">
+            <h3 id="reportTextHeading">Your account</h3>
+            <p id="reportDescription"></p>
+          </section>
+        </div>
+      </section>
+      <section class="app-panel tracking-timeline-panel" aria-labelledby="timelineHeading">
+        <div class="app-panel__heading">
+          <div>
+            <h2 id="timelineHeading">Status timeline</h2>
+            <p>Only status events supplied by VIO are shown.</p>
+          </div>
+        </div>
+        <div class="app-panel__body">
+          <ol class="timeline" id="trackingTimeline"></ol>
+        </div>
+      </section>
+      <div class="privacy-note tracking-disclaimer">Your report is a claim and has not necessarily been established as a finding. VIO does not show internal model reviews or other students’ activity.</div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a class="brand brand--footer" href="index.html" aria-label="VIO home"><span>VIO<span class="brand__period">.</span></span></a>
+      <p>Every student deserves to be heard.</p>
+      <a class="footer-preview" href="privacy.html">Privacy principles</a>
+    </div>
+  </footer>
+  <script src="js/config.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/tracking.js"></script>
+</body>
+</html>
