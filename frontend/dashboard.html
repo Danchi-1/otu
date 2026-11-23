@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8fb">
+  <meta name="description" content="Explore VIO's planned privacy-first public accountability dashboard.">
+  <title>Public dashboard — VIO</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="app-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="preview-bar">
+    <span class="preview-bar__dot" aria-hidden="true"></span>
+    <span>Dashboard preview</span>
+    <span class="preview-bar__divider" aria-hidden="true"></span>
+    <span>Aggregate data is not connected yet.</span>
+  </div>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="VIO home">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M7 8.5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H15l-5.5 4v-4H7a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2Z" fill="currentColor"/><path d="m11 15.5 3.2 3.2 6.8-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>VIO<span class="brand__period">.</span></span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="primaryNav" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
+      <nav class="primary-nav" id="primaryNav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html" aria-current="page">Dashboard</a>
+        <a href="about.html">Our approach</a>
+      </nav>
+      <a class="button button--small button--dark header-cta" href="sign-in.html">Student sign in</a>
+    </div>
+  </header>
+
+  <main class="app-main" id="main">
+    <p class="app-topline">Public accountability · Dashboard preview</p>
+    <div class="app-title-row">
+      <div>
+        <h1>Patterns, not personal details.</h1>
+        <p>VIO's public dashboard is designed to show carefully aggregated academic concern patterns — never names, report text, or individual tracking codes.</p>
+      </div>
+      <span class="app-status app-status--muted">Preview · No live data</span>
+    </div>
+
+    <section class="app-grid" aria-label="Dashboard metrics">
+      <article class="app-stat">
+        <div class="app-stat__label">Published patterns</div>
+        <div class="app-stat__value">—</div>
+        <div class="app-stat__hint">No published aggregate feed connected</div>
+      </article>
+      <article class="app-stat">
+        <div class="app-stat__label">Reporting period</div>
+        <div class="app-stat__value">—</div>
+        <div class="app-stat__hint">Period filters appear when available</div>
+      </article>
+      <article class="app-stat">
+        <div class="app-stat__label">Privacy protection</div>
+        <div class="app-stat__value">20+</div>
+        <div class="app-stat__hint">Minimum group size approved for publication</div>
+      </article>
+    </section>
+
+    <section class="app-panel" style="margin-top: 20px" aria-labelledby="patternsHeading">
+      <div class="app-panel__heading">
+        <div>
+          <h2 id="patternsHeading">Academic concern patterns</h2>
+          <p>Only published aggregate data will appear in this space.</p>
+        </div>
+        <span class="app-status app-status--gold">Not connected</span>
+      </div>
+      <div class="app-panel__body">
+        <div class="dashboard-placeholder" role="status">
+          <div class="dashboard-placeholder__content">
+            <span class="app-empty__icon" aria-hidden="true">⌁</span>
+            <h3>No live dashboard data yet</h3>
+            <p>The backend does not currently expose a public dashboard endpoint. This preview intentionally shows no sample counts or individual reports.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="app-panel" style="margin-top: 20px" aria-labelledby="privacyHeading">
+      <div class="app-panel__heading">
+        <div>
+          <h2 id="privacyHeading">What this dashboard will protect</h2>
+          <p>Public information stays aggregated and non-identifying.</p>
+        </div>
+      </div>
+      <div class="app-panel__body">
+        <div class="app-grid">
+          <div class="privacy-note"><strong>No identities.</strong> Student and lecturer names are not part of public dashboard output.</div>
+          <div class="privacy-note"><strong>No raw reports.</strong> Descriptions, comments, and tracking codes remain private.</div>
+          <div class="privacy-note"><strong>Small-group suppression.</strong> Groups under the approved threshold are hidden.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a class="brand brand--footer" href="index.html" aria-label="VIO home"><span>VIO<span class="brand__period">.</span></span></a>
+      <p>Every student deserves to be heard.</p>
+      <a class="footer-preview" href="privacy.html">Privacy principles</a>
+    </div>
+  </footer>
+  <script src="js/config.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
