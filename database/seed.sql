@@ -74,3 +74,22 @@ INSERT INTO model_registry (role, provider, model, version, prompt_version) VALU
   ('red_team',      'groq', 'openai/gpt-oss-120b',          'gpt-oss-120b',     'm5-panel-v1'),
   ('summary_check', 'groq', 'openai/gpt-oss-20b',          'gpt-oss-20b',      'm5-panel-v1')
 ON CONFLICT (role, provider, model, version, prompt_version) DO NOTHING;
+
+-- Routing steps per category (M6 escalation ladder: Step 1 HOD, Step 2 Dean, Step 3 DVC Academic)
+INSERT INTO routing_steps (university_id, category, step_order, authority_role, wait_days)
+SELECT u.id, cat.val::report_category, step.ord, step.role::authority_role, step.days
+FROM universities u
+CROSS JOIN (
+  VALUES
+    ('class_not_held'), ('practical_not_held'), ('outline_incomplete'),
+    ('poor_delivery'), ('unfair_assessment'), ('unresolved_complaint'),
+    ('other_academic'), ('institutional')
+) AS cat(val)
+CROSS JOIN (
+  VALUES
+    (1, 'hod', 7),
+    (2, 'dean', 7),
+    (3, 'dvc_academic', 14)
+) AS step(ord, role, days)
+WHERE u.short_name = 'FUNAAB'
+ON CONFLICT (university_id, category, step_order) DO NOTHING;
