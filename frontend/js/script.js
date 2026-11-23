@@ -31,6 +31,26 @@
         });
     }
 
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduceMotion && "IntersectionObserver" in window) {
+        var revealItems = document.querySelectorAll(".step-card, .dashboard-preview, .privacy-card, .form-card");
+        if (revealItems.length > 0) {
+            document.documentElement.classList.add("vio-scroll-ready");
+            var revealObserver = new IntersectionObserver(function (entries, observer) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add("is-visible");
+                    observer.unobserve(entry.target);
+                });
+            }, { threshold: 0.12 });
+
+            revealItems.forEach(function (item) {
+                item.classList.add("reveal-on-scroll");
+                revealObserver.observe(item);
+            });
+        }
+    }
+
     var form = document.getElementById("reportForm");
     var description = document.getElementById("description");
     var incidentDate = document.getElementById("incidentDate");
