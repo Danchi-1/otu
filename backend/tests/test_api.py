@@ -92,3 +92,62 @@ def test_list_reports_fails_closed_without_database_configuration():
         response = client.get("/api/v1/student/reports")
     assert response.status_code == 503
     assert response.json()["error"]["code"] == "service_unavailable"
+
+
+def test_confirmable_findings_fail_closed_without_database_configuration():
+    with TestClient(app) as client:
+        response = client.get("/api/v1/student/findings/confirmable")
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "service_unavailable"
+
+
+def test_get_finding_fails_closed_without_database_configuration():
+    with TestClient(app) as client:
+        response = client.get("/api/v1/student/findings/00000000-0000-0000-0000-000000000000")
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "service_unavailable"
+
+
+def test_confirm_finding_fails_closed_without_database_configuration():
+    with TestClient(app) as client:
+        response = client.post(
+            "/api/v1/student/findings/00000000-0000-0000-0000-000000000000/confirmations",
+            json={"comment": "I was present and this class definitely did not hold."},
+        )
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "service_unavailable"
+
+
+def test_stage6_dev_router_health_endpoint():
+    with TestClient(app) as client:
+        response = client.get("/lecturer-replies/health")
+    assert response.status_code == 200
+    assert response.json()["status"] == "ok"
+    assert response.json()["module"] == "Vio Stage 6"
+
+
+def test_post_class_notice_fails_closed_without_database():
+    with TestClient(app) as client:
+        response = client.post(
+            "/api/v1/lecturer/class-notices",
+            json={
+                "course_id": "00000000-0000-0000-0000-000000000000",
+                "lecturer_id": "00000000-0000-0000-0000-000000000000",
+                "kind": "cancelled",
+                "for_date": "2026-10-12",
+            },
+        )
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "service_unavailable"
+
+
+def test_authority_access_fails_closed_without_database():
+    with TestClient(app) as client:
+        response = client.post(
+            "/api/v1/authority/access",
+            json={"token": "a" * 32},
+        )
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "service_unavailable"
+
+
