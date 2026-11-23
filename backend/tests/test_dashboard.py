@@ -136,3 +136,72 @@ async def test_get_dashboard_filters():
     assert filters["categories"] == ["class_not_held", "materials_sales_unauthorized"]
     assert filters["date_range"]["min_month"] == "2026-09-01"
     assert filters["date_range"]["max_month"] == "2026-11-01"
+
+
+def test_public_dashboard_api_validation():
+    mock_session = AsyncMock()
+
+    async def override_session():
+        yield mock_session
+
+    app.dependency_overrides[session_dependency] = override_session
+    try:
+        with TestClient(app) as client:
+            # Invalid category
+            res = client.get("/api/v1/public/dashboard?category=fabricated_category")
+            assert res.status_code == 400
+            assert res.json()["error"]["code"] == "invalid_category"
+
+            # Invalid date range
+            res = client.get("/api/v1/public/dashboard?start_month=2026-12-01&end_month=2026-01-01")
+            assert res.status_code == 400
+            assert res.json()["error"]["code"] == "invalid_date_range"
+    finally:
+        app.dependency_overrides.pop(session_dependency, None)
+
+
+def test_public_dashboard_api_success():
+    mock_session = AsyncMock()
+
+    mock_metrics_result = MagicMock()
+    mock_metrics_result.mappings.return_value.all.return_value = [
+        {
+            "department_id": uuid4(),
+            "department": "Computer Science",
+            "category": "class_not_held",
+            "month": date(2026, 10, 1),
+            "findings": 5,
+        }
+    ]
+
+    mock_stats_result = MagicMock()
+    mock_stats_result.mappings.return_value.all.return_value = [
+        {
+            "role": "hod",
+            "deliveries": 3,
+            "acknowledged": 3,
+            "avg_hours_to_acknowledge": 6.0,
+        }
+    ]
+
+    mock_session.execute.side_effect = [
+        mock_metrics_result,
+        mock_stats_result,
+    ]
+
+    async def override_session():
+        yield mock_session
+
+    app.dependency_overrides[session_dependency] = override_session
+    try:
+        with TestClient(app) as client:
+            res = client.get("/api/v1/public/dashboard")
+            assert res.status_code == 200
+            data = res.json()
+            assert "data" in data
+            assert len(data["data"]) == 1
+            assert data["data"][0]["department"] == "Computer Science"
+            assert "authority_responsiveness" in data
+            assert len(data["authority_responsiveness"]) == 1
+    finally:
+        app.dependency_overrides.pop(session_dependency, None)
