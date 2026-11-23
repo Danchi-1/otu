@@ -38,6 +38,11 @@ class Settings:
     groq_timeout_seconds: float = 20.0
     groq_extractor_model: str = "openai/gpt-oss-20b"
     groq_safety_model: str = "openai/gpt-oss-safeguard-20b"
+    groq_consistency_model: str = "qwen/qwen3.8-27b"
+    groq_red_team_model: str = "openai/gpt-oss-120b"
+    groq_summary_model: str = "openai/gpt-oss-20b"
+    panel_min_confidence: float = 0.80
+    hold_ttl_days: int = 14
 
     @classmethod
     def from_environment(cls) -> "Settings":
@@ -60,4 +65,9 @@ class Settings:
             groq_timeout_seconds=float(os.getenv("GROQ_TIMEOUT_SECONDS", "20")),
             groq_extractor_model=os.getenv("GROQ_EXTRACTOR_MODEL", "openai/gpt-oss-20b"),
             groq_safety_model=os.getenv("GROQ_SAFETY_MODEL", "openai/gpt-oss-safeguard-20b"),
+            groq_consistency_model=os.getenv("GROQ_CONSISTENCY_MODEL", "qwen/qwen3.8-27b"),
+            groq_red_team_model=os.getenv("GROQ_RED_TEAM_MODEL", "openai/gpt-oss-120b"),
+            groq_summary_model=os.getenv("GROQ_SUMMARY_MODEL", "openai/gpt-oss-20b"),
+            panel_min_confidence=float(os.getenv("PANEL_MIN_CONFIDENCE", "0.80")),
+            hold_ttl_days=_int_env("HOLD_TTL_DAYS", 14),
         )
