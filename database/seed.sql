@@ -65,11 +65,12 @@ SELECT id, '2026/2027', 'proposed',
 FROM universities WHERE short_name = 'FUNAAB';
 
 
--- Provisional free-tier Groq assignments for report intake (M3), per
--- docs/DECISIONS.md (2026-11-15). Only roles needed so far are seeded;
--- remaining panel roles are added when their milestones land. 'version'
--- tracks the Groq-side model snapshot; update if Groq revisions the model.
+-- Provisional free-tier Groq assignments for report intake and panel gate (M3/M5),
+-- per docs/DECISIONS.md (2026-11-15).
 INSERT INTO model_registry (role, provider, model, version, prompt_version) VALUES
-  ('extractor', 'groq', 'openai/gpt-oss-20b',         'gpt-oss-20b',       'm3-intake-v1'),
-  ('safety',    'groq', 'openai/gpt-oss-safeguard-20b','gpt-oss-safeguard','m3-intake-v1')
+  ('extractor',     'groq', 'openai/gpt-oss-20b',          'gpt-oss-20b',       'm3-intake-v1'),
+  ('safety',        'groq', 'openai/gpt-oss-safeguard-20b', 'gpt-oss-safeguard','m3-intake-v1'),
+  ('consistency',   'groq', 'qwen/qwen3.8-27b',             'qwen3.8-27b',      'm5-panel-v1'),
+  ('red_team',      'groq', 'openai/gpt-oss-120b',          'gpt-oss-120b',     'm5-panel-v1'),
+  ('summary_check', 'groq', 'openai/gpt-oss-20b',          'gpt-oss-20b',      'm5-panel-v1')
 ON CONFLICT (role, provider, model, version, prompt_version) DO NOTHING;
