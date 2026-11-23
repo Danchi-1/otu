@@ -72,3 +72,82 @@ async def list_confirmable_findings(
         "data": [_format_finding_summary(r) for r in rows],
         "meta": {"next_cursor": next_cursor},
     }
+
+
+@router.get("/{finding_id}")
+async def get_finding(
+    finding_id: UUID,
+    record: student_auth.StudentSession = Depends(get_current_student),
+    session: AsyncSession = Depends(session_dependency),
+) -> dict:
+    _require_ready(record)
+    window, academic_session = await _require_confirmed_session(session, record)
+
+    row = await finding_store.get_finding_for_student(
+        session,
+        finding_id=str(finding_id),
+        student_id=record.student_id,
+        academic_session=academic_session,
+    )
+    if row is None or not row["is_registered"]:
+        raise ApiError(404, "not_found", "Finding not found.")
+
+    data = _format_finding_summary(row)
+    data["can_confirm"] = row["can_confirm"]
+    data["is_reporter"] = row["is_reporter"]
+    data["is_confirmer"] = row["is_confirmer"]
+    data["clearance_tier"] = row["clearance_tier"]
+    return {"data": data}
+
+
+@router.post("/{finding_id}/confirmations")
+async def confirm_finding(
+    finding_id: UUID,
+    body: ConfirmationRequest,
+    record: student_auth.StudentSession = Depends(get_current_student),
+    session: AsyncSession = Depends(session_dependency),
+) -> dict:
+    _require_ready(record)
+    window, academic_session = await _require_confirmed_session(session, record)
+
+    finding_str_id = str(finding_id)
+    finding = await finding_store.get_finding_for_student(
+        session,
+        finding_id=finding_str_id,
+        student_id=record.student_id,
+        academic_session=academic_session,
+    )
+    if finding is None or not finding["is_registered"]:
+        raise ApiError(404, "not_found", "Finding not found.")
+
+    if finding["is_reporter"]:
+        raise ApiError(422, "validation_failed", "You cannot confirm an incident that you reported.")
+    if finding["is_confirmer"]:
+        raise ApiError(422, "validation_failed", "You have already confirmed this incident.")
+    if finding["status"] != "collecting":
+        raise ApiError(422, "validation_failed", "This finding is no longer open for confirmation.")
+
+    try:
+        confirmation_id = await finding_store.add_confirmation(
+            session,
+            finding_id=finding_str_id,
+            student_id=record.student_id,
+            comment=body.comment,
+        )
+        score_res = await finding_store.recompute_and_store_finding_score(
+            session, finding_id=finding_str_id
+        )
+        await session.commit()
+    except IntegrityError as exc:
+        await session.rollback()
+        raise ApiError(422, "validation_failed", "You cannot confirm this incident.") from exc
+
+    return {
+        "data": {
+            "confirmation_id": confirmation_id,
+            "finding_id": finding_str_id,
+            "status": "confirmed",
+            "message": "Your confirmation was recorded.",
+            "total_supporters": score_res.total_supporters,
+        }
+    }
