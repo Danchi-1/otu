@@ -161,6 +161,7 @@ async def verify_email_challenge(
 
     await student_auth.consume_challenge(session, challenge.id)
     student_id = await student_auth.get_or_create_student(session, challenge.university_id, challenge.identity_hash)
+    await student_auth.ensure_email_verification(session, student_id)
 
     token = generate_session_token()
     token_hash = compute_session_token_hash(session_secret, token)
