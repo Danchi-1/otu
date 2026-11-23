@@ -182,6 +182,19 @@ async def get_or_create_student(session: AsyncSession, university_id: str, ident
     return str(row[0])
 
 
+async def ensure_email_verification(session: AsyncSession, student_id: str) -> None:
+    await session.execute(
+        text(
+            """
+            INSERT INTO student_verifications (student_id, factor, passed)
+            VALUES (:student_id, 'school_email', true)
+            ON CONFLICT (student_id, factor) DO UPDATE SET passed = true
+            """
+        ),
+        {"student_id": student_id},
+    )
+
+
 async def create_session(
     session: AsyncSession, *, student_id: str, token_hash: bytes, ttl_days: int
 ) -> datetime:
