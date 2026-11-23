@@ -1,155 +1,367 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIO | Voice It Out</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8fb">
+  <meta
+    name="description"
+    content="VIO gives university students a structured, privacy-minded way to raise academic concerns."
+  >
+  <title>VIO — Every student deserves to be heard</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="navbar">
-        <a href="#home" class="logo">VIO<span>.</span></a>
+  <div class="preview-bar">
+    <span class="preview-bar__dot" aria-hidden="true"></span>
+    <span>VIO student portal</span>
+    <span class="preview-bar__divider" aria-hidden="true"></span>
+    <span>Student flows require configured backend services · Public data is not connected yet.</span>
+  </div>
 
-        <nav>
-            <a href="#home">Home</a>
-            <a href="#how-it-works">How it works</a>
-            <a href="#dashboard">Dashboard</a>
-            <a href="#submit">Submit a report</a>
-        </nav>
-    </header>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#home" aria-label="VIO home">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M7 8.5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H15l-5.5 4v-4H7a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2Z" fill="currentColor"/>
+            <path d="m11 15.5 3.2 3.2 6.8-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>VIO<span class="brand__period">.</span></span>
+      </a>
 
-    <div class="ticker">
-        <div class="ticker-text">
-            EVERY STUDENT DESERVES TO BE HEARD.
-            &nbsp;&nbsp; YOUR VOICE MATTERS.
-            &nbsp;&nbsp; SPEAK UP. MAKE A DIFFERENCE.
-            &nbsp;&nbsp; EVERY STUDENT DESERVES TO BE HEARD.
-        </div>
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="primaryNav"
+        aria-label="Open navigation menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="primary-nav" id="primaryNav" aria-label="Main navigation">
+        <a href="#how-it-works">How it works</a>
+        <a href="dashboard.html">Public dashboard</a>
+        <a href="about.html">Our approach</a>
+      </nav>
+
+      <a class="button button--small button--dark header-cta" href="sign-in.html">Student sign in</a>
     </div>
+  </header>
 
-    <main>
-        <section class="hero" id="home">
-            <div class="hero-content">
-                <span class="eyebrow">STUDENT VOICE. ACADEMIC ACCOUNTABILITY.</span>
-                <h1>Your Voice Deserves<br>to Be <span>Heard.</span></h1>
-                <p>
-                    VIO gives students a safe way to raise academic
-                    concerns and contribute to positive change.
-                </p>
-                <a href="#submit" class="primary-button">Share Your Concern</a>
+  <main id="main">
+    <section class="hero section-wrap" id="home">
+      <div class="hero__copy">
+        <p class="eyebrow"><span aria-hidden="true"></span> Student voice · Academic accountability</p>
+        <h1>Every student deserves to be <span>heard.</span></h1>
+        <p class="hero__intro">
+          A clearer, more thoughtful way to raise academic concerns. VIO is designed
+          to keep reports private while helping surface patterns that matter.
+        </p>
+        <div class="hero__actions">
+          <a class="button button--primary" href="sign-in.html">
+            Student sign in
+            <span aria-hidden="true">→</span>
+          </a>
+          <a class="text-link" href="dashboard.html">View public dashboard</a>
+        </div>
+        <p class="hero__reassurance">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M10 2.5 16 5v4.4c0 3.6-2.5 6.6-6 8.1-3.5-1.5-6-4.5-6-8.1V5l6-2.5Z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="m7.2 9.8 1.8 1.8 3.8-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          A report is a claim — not a finding.
+        </p>
+      </div>
+
+      <aside class="hero-card" aria-label="How VIO is designed to protect privacy">
+        <div class="hero-card__top">
+          <span class="hero-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 3 19 6v5.1c0 4.2-2.9 7.7-7 9.4-4.1-1.7-7-5.2-7-9.4V6l7-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+              <path d="m9 11.5 2 2 4-4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="status-pill"><span aria-hidden="true"></span> Privacy by design</span>
+        </div>
+        <div
+          class="hero-visual"
+          role="img"
+          aria-label="A private student report stays in the student's account; the public view is aggregate only."
+        >
+          <span class="hero-visual__orbit hero-visual__orbit--outer" aria-hidden="true"></span>
+          <span class="hero-visual__orbit hero-visual__orbit--inner" aria-hidden="true"></span>
+          <span class="hero-visual__node hero-visual__node--top" aria-hidden="true"></span>
+          <span class="hero-visual__node hero-visual__node--left" aria-hidden="true"></span>
+          <span class="hero-visual__node hero-visual__node--right" aria-hidden="true"></span>
+          <span class="hero-visual__node hero-visual__node--bottom" aria-hidden="true"></span>
+          <div class="hero-visual__seal" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <path d="M24 5 39 11v11.2c0 9-6.2 16.4-15 20.1C15.2 38.6 9 31.2 9 22.2V11l15-6Z" stroke="currentColor" stroke-width="1.8"/>
+              <path d="m17.5 23.5 4.2 4.2 9-10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>VIO</span>
+          </div>
+          <div class="hero-visual__signal hero-visual__signal--private">
+            <span class="hero-visual__signal-icon" aria-hidden="true">01</span>
+            <span><small>STUDENT SPACE</small><strong>Private by default</strong></span>
+          </div>
+          <div class="hero-visual__signal hero-visual__signal--public">
+            <span class="hero-visual__signal-icon hero-visual__signal-icon--public" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M3 16V9m4 7V4m5 12v-5m5 5V7M1.5 17.5h17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <span><small>PUBLIC VIEW</small><strong>Aggregate only</strong></span>
+          </div>
+        </div>
+        <p class="hero-card__label">One voice. A careful process.</p>
+        <div class="journey-step">
+          <span class="journey-step__number">01</span>
+          <span><strong>Share a concern</strong><small>Private student report</small></span>
+          <span class="journey-step__lock" aria-label="Private">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="4" y="8.5" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M6.5 8.5V6a3.5 3.5 0 1 1 7 0v2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+        </div>
+        <span class="journey-connector" aria-hidden="true"></span>
+        <div class="journey-step">
+          <span class="journey-step__number">02</span>
+          <span><strong>Review the details</strong><small>Checks before any decision</small></span>
+          <span class="journey-step__check" aria-hidden="true">✓</span>
+        </div>
+        <span class="journey-connector" aria-hidden="true"></span>
+        <div class="journey-step journey-step--last">
+          <span class="journey-step__number">03</span>
+          <span><strong>See aggregate patterns</strong><small>No public names or report text</small></span>
+          <span class="journey-step__chart" aria-hidden="true">↗</span>
+        </div>
+        <p class="hero-card__note">Illustrative flow · No live student data</p>
+      </aside>
+    </section>
+
+    <section class="trust-strip" aria-label="VIO principles">
+      <div class="trust-strip__inner">
+        <p><span aria-hidden="true">01</span> Factual, structured reports</p>
+        <p><span aria-hidden="true">02</span> Private by default</p>
+        <p><span aria-hidden="true">03</span> Aggregate public information</p>
+      </div>
+    </section>
+
+    <section class="section section--white" id="how-it-works">
+      <div class="section-wrap">
+        <div class="section-heading">
+          <p class="eyebrow">A considered process</p>
+          <h2>Speak up with clarity.</h2>
+          <p class="section-lead">
+            VIO is being designed to make it easier to share a concern responsibly
+            and understand what happens next.
+          </p>
+        </div>
+        <div class="steps-grid">
+          <article class="step-card">
+            <span class="step-card__number">01</span>
+            <div class="step-card__icon step-card__icon--teal" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M5 5.5h14A2.5 2.5 0 0 1 21.5 8v8a2.5 2.5 0 0 1-2.5 2.5h-7L7 21v-2.5H5A2.5 2.5 0 0 1 2.5 16V8A2.5 2.5 0 0 1 5 5.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                <path d="M7.5 10h9m-9 4h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
             </div>
-
-            <div class="hero-icons">
-                <div class="floating-icon">📚</div>
-                <div class="floating-icon">🎓</div>
-                <div class="floating-icon">🛡️</div>
-                <div class="floating-icon">✍️</div>
+            <h3>Describe what happened</h3>
+            <p>Share a factual account of an academic concern through a guided process.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-card__number">02</span>
+            <div class="step-card__icon step-card__icon--blue" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 3 19 6v5.1c0 4.2-2.9 7.7-7 9.4-4.1-1.7-7-5.2-7-9.4V6l7-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                <path d="m9 11.5 2 2 4-4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </div>
-        </section>
-
-        <section class="how-section" id="how-it-works">
-            <h2>How VIO Works</h2>
-            <p class="section-intro">Your voice can help improve the academic experience.</p>
-
-            <div class="steps">
-                <article class="step-card">
-                    <span>01</span>
-                    <h3>Speak Up</h3>
-                    <p>Share an academic concern through the reporting form.</p>
-                </article>
-
-                <article class="step-card">
-                    <span>02</span>
-                    <h3>Review</h3>
-                    <p>Reports can be reviewed and checked before action is taken.</p>
-                </article>
-
-                <article class="step-card">
-                    <span>03</span>
-                    <h3>Create Change</h3>
-                    <p>Verified concerns can help encourage accountability.</p>
-                </article>
+            <h3>Allow careful review</h3>
+            <p>A submission is a claim. It should not be treated as a verified outcome on its own.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-card__number">03</span>
+            <div class="step-card__icon step-card__icon--gold" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 19.5V12m5 7.5V5m5 14.5v-10m5 10V8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M2.5 20.5h19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
             </div>
-        </section>
+            <h3>Understand broader patterns</h3>
+            <p>The public view is intended for privacy-safe aggregates, never individual reports.</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-        <section class="dashboard-section" id="dashboard">
-            <h2>VIO Dashboard</h2>
-            <p class="section-intro">A snapshot of the demonstration reports.</p>
-
-            <div class="dashboard-cards">
-                <article class="dashboard-card">
-                    <p>Total Reports</p>
-                    <h3 id="totalReports">0</h3>
-                </article>
-
-                <article class="dashboard-card">
-                    <p>Under Review</p>
-                    <h3 id="pendingReports">0</h3>
-                </article>
-
-                <article class="dashboard-card">
-                    <p>Reviewed</p>
-                    <h3 id="reviewedReports">0</h3>
-                </article>
+    <section class="section dashboard-section" id="dashboard">
+      <div class="section-wrap dashboard-layout">
+        <div>
+          <p class="eyebrow">Public accountability</p>
+          <h2>Patterns, not personal details.</h2>
+          <p class="section-lead">
+            The planned dashboard will show aggregate information only. It will
+            not identify students, lecturers, or individual reports.
+          </p>
+          <a class="text-link text-link--teal" href="#privacy">Read our privacy principles <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="dashboard-preview">
+          <div class="dashboard-preview__header">
+            <div>
+              <p class="dashboard-preview__eyebrow">VIO dashboard</p>
+              <h3>Academic concerns</h3>
             </div>
-        </section>
+            <span class="preview-tag">Preview</span>
+          </div>
+          <div class="dashboard-empty">
+            <span class="dashboard-empty__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 19.5V12m5 7.5V5m5 14.5v-10m5 10V8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                <path d="M2.5 20.5h19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <h4>No live dashboard data yet</h4>
+            <p>This preview is not connected to published aggregate data.</p>
+          </div>
+          <div class="dashboard-preview__foot">
+            <span><i aria-hidden="true"></i> Aggregate-only by design</span>
+            <span>Illustrative interface</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <section class="report-section" id="submit">
-            <h2>Share Your Academic Concern</h2>
-            <p class="section-intro">
-                Help us understand the academic challenges students face.
-            </p>
+    <section class="section privacy-section" id="privacy">
+      <div class="section-wrap">
+        <div class="section-heading section-heading--center">
+          <p class="eyebrow">Trust is part of the product</p>
+          <h2>Designed with care.</h2>
+          <p class="section-lead">
+            Raising a concern can feel difficult. VIO’s product principles put
+            privacy, context, and careful language first.
+          </p>
+        </div>
+        <div class="privacy-grid">
+          <article class="privacy-card">
+            <span class="privacy-card__icon" aria-hidden="true">01</span>
+            <h3>Identity stays private</h3>
+            <p>School email is intended to verify student eligibility, not appear on public reports.</p>
+          </article>
+          <article class="privacy-card">
+            <span class="privacy-card__icon" aria-hidden="true">02</span>
+            <h3>A claim is not a finding</h3>
+            <p>One report does not establish that an issue occurred or justify a public accusation.</p>
+          </article>
+          <article class="privacy-card">
+            <span class="privacy-card__icon" aria-hidden="true">03</span>
+            <h3>Public means aggregate</h3>
+            <p>The intended public experience excludes names, report text, and individual tracking codes.</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-            <form id="reportForm">
-                <label for="category">Report Category</label>
-                <select id="category" required>
-                    <option value="">Choose a category</option>
-                    <option value="Missed Lectures">Missed Lectures</option>
-                    <option value="Incomplete Course Coverage">Incomplete Course Coverage</option>
-                    <option value="Teaching Quality">Teaching Quality</option>
-                    <option value="Assessment Concerns">Assessment Concerns</option>
-                    <option value="Other">Other</option>
-                </select>
+    <section class="section demo-section" id="demo">
+      <div class="section-wrap demo-layout">
+        <div class="demo-copy">
+          <p class="eyebrow">Try the interface</p>
+          <h2>Explore a sample report.</h2>
+          <p class="section-lead">
+            Use fictional details to preview the form interaction. This page
+            does not send or save your submission.
+          </p>
+          <div class="demo-notice">
+            <span aria-hidden="true">i</span>
+            <p><strong>Preview only.</strong> Do not enter real names, student numbers, contact details, or sensitive information.</p>
+          </div>
+          <ul class="demo-points">
+            <li><span aria-hidden="true">✓</span> No sign-in or personal details requested</li>
+            <li><span aria-hidden="true">✓</span> Nothing is sent to a server or saved</li>
+            <li><span aria-hidden="true">✓</span> No real tracking code is generated</li>
+          </ul>
+        </div>
 
-                <label for="course">Course Code</label>
-                <input type="text" id="course" placeholder="e.g. CSC301">
-
-                <label for="incidentDate">Date of Incident</label>
-                <input type="date" id="incidentDate" required>
-
-                <label for="description">Describe Your Concern</label>
-                <textarea id="description" rows="5"
-                    placeholder="Explain what happened..." required minlength="20"></textarea>
-
-                <label class="anonymous-option">
-                    <input type="checkbox" id="anonymous" checked>
-                    Do not display my name publicly
-                </label>
-
-                <button type="submit" class="primary-button">Submit Report</button>
-
-                <p id="formMessage" role="status"></p>
-            </form>
-        </section>
-
-        <section class="recent-reports">
-            <h2>Recent Demo Reports</h2>
-            <div id="reportList" class="report-list">
-                <p>No reports submitted yet.</p>
+        <div class="form-card">
+          <div class="form-card__heading">
+            <div>
+              <span class="preview-tag preview-tag--teal">Local demo</span>
+              <h3 id="reportPreviewHeading">Report preview</h3>
             </div>
-        </section>
-    </main>
+            <span class="form-card__step">01 <span>/ 01</span></span>
+          </div>
+          <div class="demo-form" id="reportForm" role="group" aria-labelledby="reportPreviewHeading">
+            <div class="field">
+              <label for="category">What is your concern about?</label>
+              <select id="category" name="category" required>
+                <option value="">Select a category</option>
+                <option value="class_not_held">A class was not held</option>
+                <option value="practical_not_held">A practical was not held</option>
+                <option value="outline_incomplete">Course outline not completed</option>
+                <option value="poor_delivery">Course delivery concern</option>
+                <option value="unfair_assessment">Assessment concern</option>
+                <option value="unresolved_complaint">Unresolved complaint</option>
+                <option value="other_academic">Other academic issue</option>
+                <option value="institutional">Institutional issue</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="course">Course code <span class="field-optional">Optional in demo</span></label>
+                <input id="course" name="course" type="text" maxlength="24" placeholder="e.g. CSC 201" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="incidentDate">Incident date</label>
+                <input id="incidentDate" name="incidentDate" type="date" required>
+              </div>
+            </div>
+            <div class="field">
+              <div class="label-row">
+                <label for="description">Describe what happened</label>
+                <span id="characterCount" class="character-count">0 / 2,000</span>
+              </div>
+              <textarea
+                id="description"
+                name="description"
+                rows="5"
+                minlength="20"
+                maxlength="2000"
+                placeholder="Use a clear, factual description. Please use fictional details in this demo."
+                required
+              ></textarea>
+              <p class="field-hint">20–2,000 characters. Avoid names and identifying details.</p>
+            </div>
+            <button class="button button--primary button--submit" id="previewButton" type="button">
+              Preview demo response
+              <span aria-hidden="true">→</span>
+            </button>
+            <p class="demo-result" id="formMessage" role="status" aria-live="polite" hidden></p>
+            <p class="form-footnote">Demo only · Nothing will be submitted or stored</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-    <footer>
-        <a href="#home" class="logo">VIO<span>.</span></a>
-        <p>Every Student Deserves to Be Heard.</p>
-        <p class="footer-note">Hackathon demonstration prototype.</p>
-    </footer>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a class="brand brand--footer" href="#home" aria-label="VIO home">
+        <span>VIO<span class="brand__period">.</span></span>
+      </a>
+      <p>Every student deserves to be heard.</p>
+      <span class="footer-preview">Student flows require configured services · Public dashboard is a preview</span>
+    </div>
+  </footer>
 
-    <!-- Frontend scripts to be implemented by frontend developers -->
-    <!-- <script src="js/config.js"></script> -->
-    <!-- <script src="js/script.js"></script> -->
+  <script src="js/config.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>
