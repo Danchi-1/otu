@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8fb">
+  <meta name="description" content="Sign in to VIO with your university student email.">
+  <title>Student sign in — VIO</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="app-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="preview-bar">
+    <span class="preview-bar__dot" aria-hidden="true"></span>
+    <span>Student portal</span>
+    <span class="preview-bar__divider" aria-hidden="true"></span>
+    <span>School email verifies eligibility; it is not shown on reports.</span>
+  </div>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="VIO home">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M7 8.5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H15l-5.5 4v-4H7a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2Z" fill="currentColor"/><path d="m11 15.5 3.2 3.2 6.8-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>VIO<span class="brand__period">.</span></span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="primaryNav" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
+      <nav class="primary-nav" id="primaryNav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="about.html">Our approach</a>
+      </nav>
+      <a class="button button--small button--dark header-cta" href="privacy.html">Privacy</a>
+    </div>
+  </header>
+
+  <main class="app-main" id="main">
+    <div class="auth-layout">
+      <section class="auth-story">
+        <p class="app-topline">A private student space</p>
+        <h1>Your voice.<br><span>Your next step.</span></h1>
+        <p>Sign in with your official student email to continue to your profile, registered courses, and personal report history.</p>
+        <ul class="auth-points">
+          <li><span aria-hidden="true">✓</span> One-time code sent to your university email</li>
+          <li><span aria-hidden="true">✓</span> Your email is not displayed on reports</li>
+          <li><span aria-hidden="true">✓</span> Public pages show aggregates, never your report</li>
+        </ul>
+        <p class="form-help">New to VIO? Email verification creates your student account and takes you through setup.</p>
+      </section>
+
+      <section class="auth-card" aria-labelledby="signInHeading">
+        <p class="app-topline">Student access</p>
+        <h2 id="signInHeading">Sign in to VIO</h2>
+        <p class="auth-card__intro">We’ll send a short-lived verification code. We won’t reveal whether an email already has an account.</p>
+
+        <div class="app-alert app-alert--error" id="authError" role="alert" hidden></div>
+        <div class="app-alert app-alert--success" id="authSuccess" role="status" aria-live="polite" hidden></div>
+
+        <div class="auth-step" id="emailStep" role="group" aria-labelledby="emailStepHeading">
+          <h3 class="app-sidebar__label" id="emailStepHeading">Step 1 · Verify your email</h3>
+          <div class="field">
+            <label for="university">University</label>
+            <select id="university" required>
+              <option value="">Loading universities…</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="email">Official student email</label>
+            <input id="email" type="email" autocomplete="email" required maxlength="320" placeholder="you@school.edu">
+            <p class="form-help">Use the address issued by your university. Staff or personal addresses may not be eligible.</p>
+          </div>
+          <button class="button button--primary auth-card__button" id="requestCode" type="button">
+            Send verification code <span aria-hidden="true">→</span>
+          </button>
+        </div>
+
+        <div class="auth-step" id="codeStep" role="group" aria-labelledby="codeStepHeading" hidden>
+          <h3 class="app-sidebar__label" id="codeStepHeading">Step 2 · Enter your code</h3>
+          <p class="auth-card__intro" id="maskedDestination"></p>
+          <div class="field">
+            <label for="verificationCode">Six-digit code</label>
+            <input
+              class="otp-input"
+              id="verificationCode"
+              type="text"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              pattern="[0-9]{6}"
+              maxlength="6"
+              required
+              aria-describedby="codeHelp"
+              placeholder="000000"
+            >
+            <p class="form-help" id="codeHelp">The code expires after 10 minutes.</p>
+          </div>
+          <button class="button button--primary auth-card__button" id="verifyCode" type="button">
+            Verify and continue <span aria-hidden="true">→</span>
+          </button>
+          <div class="code-meta">
+            <span id="resendTimer">Requesting code…</span>
+            <button id="resendCode" type="button" disabled>Resend code</button>
+          </div>
+          <button class="text-link auth-card__back" id="changeEmail" type="button">Use a different email</button>
+        </div>
+
+        <p class="form-help">By continuing, you agree to use VIO responsibly. A report is a claim, not a finding.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a class="brand brand--footer" href="index.html" aria-label="VIO home"><span>VIO<span class="brand__period">.</span></span></a>
+      <p>Every student deserves to be heard.</p>
+      <a class="footer-preview" href="privacy.html">Privacy principles</a>
+    </div>
+  </footer>
+  <script src="js/config.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/sign-in.js"></script>
+</body>
+</html>
