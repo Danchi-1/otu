@@ -337,11 +337,55 @@ async def get_report(
         raise ApiError(404, "not_found", "Report not found.")
     data = _report_json(row)
     data["public_summary"] = row["public_summary"]
-    data["timeline"] = [
+    timeline = [
         {
             "event": "received",
             "occurred_at": row["created_at"].isoformat() if row["created_at"] else None,
             "label": "Report received",
         }
     ]
+    status = row.get("finding_status")
+    if status == "collecting":
+        timeline.append({
+            "event": "collecting",
+            "occurred_at": None,
+            "label": "Collecting corroborating student confirmations",
+        })
+    elif status == "pending_panel":
+        timeline.append({
+            "event": "evaluating",
+            "occurred_at": None,
+            "label": "Under automated verification",
+        })
+    elif status == "cleared":
+        timeline.append({
+            "event": "cleared",
+            "occurred_at": None,
+            "label": "Finding verified and established",
+        })
+    elif status == "published":
+        timeline.append({
+            "event": "cleared",
+            "occurred_at": None,
+            "label": "Finding verified and established",
+        })
+        timeline.append({
+            "event": "published",
+            "occurred_at": None,
+            "label": "Aggregated on public institutional dashboard",
+        })
+    elif status == "held":
+        timeline.append({
+            "event": "held",
+            "occurred_at": None,
+            "label": "Held pending additional corroborating evidence",
+        })
+    elif status == "rejected":
+        timeline.append({
+            "event": "closed",
+            "occurred_at": None,
+            "label": "Closed: insufficient evidence",
+        })
+
+    data["timeline"] = timeline
     return {"data": data}
