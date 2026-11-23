@@ -3,10 +3,11 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Request
 from sqlalchemy import text
 
+from backend.src.api.lecturer_reply_api import router as stage6_dev_router
 from vio_backend.config import Settings
 from vio_backend.database import make_engine, make_session_factory
 from vio_backend.errors import register_error_handlers
-from vio_backend.routers import auth, catalogue, reports, student
+from vio_backend.routers import auth, authority, catalogue, dashboard, findings, lecturer, reports, student
 
 
 @asynccontextmanager
@@ -30,6 +31,11 @@ app.include_router(catalogue.router)
 app.include_router(auth.router)
 app.include_router(student.router)
 app.include_router(reports.router)
+app.include_router(findings.router)
+app.include_router(lecturer.router)
+app.include_router(authority.router)
+app.include_router(dashboard.router)
+app.include_router(stage6_dev_router)
 
 
 @app.get("/health/live", tags=["health"])
