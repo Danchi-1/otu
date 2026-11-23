@@ -17,7 +17,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from vio_backend import model_panel, report_store, student_auth
+from vio_backend import finding_store, model_panel, report_store, student_auth
 from vio_backend.database import session_dependency
 from vio_backend.errors import ApiError
 from vio_backend.report_rules import (
@@ -272,6 +272,7 @@ async def submit_report(
         verdict="pass",
         reasons={"extraction": extraction.raw},
     )
+    await finding_store.recompute_and_store_finding_score(session, finding_id=finding_id)
     await session.commit()
 
     return {
