@@ -97,3 +97,88 @@ class SupporterInput:
     has_verified_email: bool
     anomaly_severities: list[float]
     false_finding_count: int
+
+
+@dataclass(frozen=True)
+class ScoreResult:
+    score: float
+    distinct_reports: int
+    distinct_confirmations: int
+    total_supporters: int
+    clearance_tier: int
+    breakdown: dict[str, Any]
+
+
+def calculate_finding_score(
+    *,
+    incident_date: date,
+    as_of: date,
+    announced_in_advance: bool,
+    supporters: list[SupporterInput],
+) -> ScoreResult:
+    reports_count = sum(1 for s in supporters if s.role == "reporter")
+    confirmations_count = sum(1 for s in supporters if s.role == "confirmer")
+    total_supporters = len(supporters)
+
+    recency_days = max(0, (as_of - incident_date).days)
+    recency_mult = compute_recency_multiplier(incident_date, as_of)
+    notice_mult = ADVANCE_NOTICE_MULTIPLIER if announced_in_advance else 1.00
+
+    supporter_breakdowns = []
+    base_supporter_score = 0.0
+
+    for s in supporters:
+        contrib, trust, a_mult, f_rel = compute_supporter_contribution(
+            has_verified_email=s.has_verified_email,
+            severities=s.anomaly_severities,
+            false_finding_count=s.false_finding_count,
+        )
+        base_supporter_score += contrib
+        supporter_breakdowns.append(
+            {
+                "student_id": s.student_id,
+                "role": s.role,
+                "trust": trust,
+                "anomaly_multiplier": a_mult,
+                "false_reliability": f_rel,
+                "contribution": contrib,
+            }
+        )
+
+    final_score = round(base_supporter_score * recency_mult * notice_mult, 3)
+
+    tier_1_reached = (reports_count >= TIER_1_MIN_REPORTS) and (final_score >= TIER_1_MIN_SCORE)
+    tier_2_reached = (total_supporters >= TIER_2_MIN_SUPPORTERS) and (final_score >= TIER_2_MIN_SCORE)
+
+    if tier_2_reached:
+        clearance_tier = 2
+    elif tier_1_reached:
+        clearance_tier = 1
+    else:
+        clearance_tier = 0
+
+    breakdown = {
+        "formula_version": FORMULA_VERSION,
+        "distinct_reports": reports_count,
+        "distinct_confirmations": confirmations_count,
+        "total_supporters": total_supporters,
+        "base_supporter_score": round(base_supporter_score, 4),
+        "recency_days": recency_days,
+        "recency_multiplier": recency_mult,
+        "announced_in_advance": announced_in_advance,
+        "advance_notice_multiplier": notice_mult,
+        "final_score": final_score,
+        "clearance_tier": clearance_tier,
+        "tier_1_reached": tier_1_reached,
+        "tier_2_reached": tier_2_reached,
+        "supporters": supporter_breakdowns,
+    }
+
+    return ScoreResult(
+        score=final_score,
+        distinct_reports=reports_count,
+        distinct_confirmations=confirmations_count,
+        total_supporters=total_supporters,
+        clearance_tier=clearance_tier,
+        breakdown=breakdown,
+    )
