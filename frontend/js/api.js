@@ -73,6 +73,9 @@
         get: function (path) {
             return request(path, "GET").then(unwrap);
         },
+        getPage: function (path) {
+            return request(path, "GET");
+        },
         post: function (path, body) {
             return request(path, "POST", body).then(unwrap);
         },
