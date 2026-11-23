@@ -14,6 +14,17 @@ The public dashboard still has no aggregate-data endpoint and intentionally show
 
 The endpoint proposal remains a guide for routes that are not implemented. For the student flows listed above, follow the active router behavior and response envelopes instead of treating proposed endpoints as available.
 
+### Run the frontend locally
+
+From the repository root, serve the static frontend on port 5500:
+
+```powershell
+Set-Location frontend
+python -m http.server 5500
+```
+
+Open `http://127.0.0.1:5500`. The frontend API base defaults to `http://127.0.0.1:8000` and may be overridden with `window.VIO_API_BASE_URL` before the page scripts load. The backend must be running separately with its database and required environment variables configured. Its `FRONTEND_ORIGINS` allowlist must include the exact frontend origin (the default includes both `http://127.0.0.1:5500` and `http://localhost:5500`). Real email verification requires working SMTP settings; report acceptance requires working Groq credentials and configured panel models. Never copy secrets into frontend files.
+
 ## User-Facing Flows
 
 ### Public dashboard
