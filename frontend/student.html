@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8fb">
+  <meta name="description" content="Your private VIO student dashboard.">
+  <title>My VIO — Student dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="app-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="preview-bar">
+    <span class="preview-bar__dot" aria-hidden="true"></span>
+    <span>Private student space</span>
+    <span class="preview-bar__divider" aria-hidden="true"></span>
+    <span>Your reports are visible only to you here.</span>
+  </div>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="VIO home">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M7 8.5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H15l-5.5 4v-4H7a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2Z" fill="currentColor"/><path d="m11 15.5 3.2 3.2 6.8-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>VIO<span class="brand__period">.</span></span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="primaryNav" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
+      <nav class="primary-nav" id="primaryNav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="about.html">Our approach</a>
+      </nav>
+      <button class="button button--small button--dark header-cta" id="signOut" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <main class="app-main" id="main">
+    <p class="app-topline">Your VIO · Private account</p>
+    <div class="app-title-row">
+      <div>
+        <h1>Your student space.</h1>
+        <p>Review your setup and reports. Your private activity is never shown on the public dashboard.</p>
+      </div>
+      <a class="button button--primary" href="report.html">File a report <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="app-alert app-alert--error" id="studentError" role="alert" hidden></div>
+
+    <div class="app-layout">
+      <nav class="app-sidebar" aria-label="Student navigation">
+        <p class="app-sidebar__label">Your VIO</p>
+        <a href="student.html" aria-current="page"><span class="app-sidebar__icon">⌂</span> Overview</a>
+        <a href="setup.html"><span class="app-sidebar__icon">◎</span> Profile & courses</a>
+        <a href="report.html"><span class="app-sidebar__icon">＋</span> File a report</a>
+      </nav>
+
+      <div class="app-content">
+        <section class="app-grid" aria-label="Your VIO overview">
+          <article class="app-stat">
+            <div class="app-stat__label">Recent reports</div>
+            <div class="app-stat__value" id="reportCount">—</div>
+            <div class="app-stat__hint">Your own reports loaded here</div>
+          </article>
+          <article class="app-stat">
+            <div class="app-stat__label">Selected courses</div>
+            <div class="app-stat__value" id="courseCount">—</div>
+            <div class="app-stat__hint">Self-declared · Unverified</div>
+          </article>
+          <article class="app-stat">
+            <div class="app-stat__label">Academic session</div>
+            <div class="app-stat__value app-stat__value--small" id="sessionValue">—</div>
+            <div class="app-stat__hint" id="sessionHint">Loading your setup</div>
+          </article>
+        </section>
+
+        <section class="app-panel" style="margin-top: 18px" aria-labelledby="profileHeading">
+          <div class="app-panel__heading">
+            <div>
+              <h2 id="profileHeading">Your setup</h2>
+              <p id="profileSummary">Loading your profile…</p>
+            </div>
+            <a class="app-link" href="setup.html">Manage profile →</a>
+          </div>
+          <div class="app-panel__body">
+            <div class="privacy-note">Your courses are self-declared until a verified university registration source is available.</div>
+          </div>
+        </section>
+
+        <section class="app-panel" style="margin-top: 18px" aria-labelledby="reportsHeading">
+          <div class="app-panel__heading">
+            <div>
+              <h2 id="reportsHeading">Your recent reports</h2>
+              <p>Private to your account. A report is a claim, not a finding.</p>
+            </div>
+            <a class="app-link" href="report.html">New report →</a>
+          </div>
+          <div class="app-panel__body">
+            <div class="app-empty" id="reportsEmpty" hidden>
+              <span class="app-empty__icon" aria-hidden="true">＋</span>
+              <h3>No reports yet</h3>
+              <p>When you file a report, it will appear here with a private link to its status.</p>
+            </div>
+            <div class="app-list" id="reportsList" aria-live="polite"></div>
+            <button class="text-link" id="loadMoreReports" type="button" hidden>Load older reports</button>
+          </div>
+        </section>
+
+        <section class="app-panel" style="margin-top: 18px" aria-labelledby="coursesHeading">
+          <div class="app-panel__heading">
+            <div>
+              <h2 id="coursesHeading">Your selected courses</h2>
+              <p>Only courses you select are available in your report form.</p>
+            </div>
+            <a class="app-link" href="setup.html">Edit courses →</a>
+          </div>
+          <div class="app-panel__body">
+            <div class="app-empty" id="coursesEmpty" hidden>
+              <span class="app-empty__icon" aria-hidden="true">◎</span>
+              <h3>No courses selected</h3>
+              <p>Set up your profile and choose courses before filing a course-specific report.</p>
+              <a class="app-link" style="margin-top: 10px" href="setup.html">Go to setup →</a>
+            </div>
+            <div class="app-list" id="coursesList"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a class="brand brand--footer" href="index.html" aria-label="VIO home"><span>VIO<span class="brand__period">.</span></span></a>
+      <p>Every student deserves to be heard.</p>
+      <a class="footer-preview" href="privacy.html">Privacy principles</a>
+    </div>
+  </footer>
+  <script src="js/config.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/student.js"></script>
+</body>
+</html>
