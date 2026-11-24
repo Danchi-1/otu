@@ -270,7 +270,7 @@ CREATE TABLE platform_settings (
 -- Trust score = base (unverified) + weights of passed factors.
 CREATE VIEW student_trust AS
 SELECT s.id AS student_id,
-       0.20 + COALESCE(SUM(w.weight) FILTER (WHERE v.passed), 0) AS trust_score  -- 0.20 base: tunable
+       0.10 + COALESCE(SUM(w.weight) FILTER (WHERE v.passed), 0) AS trust_score  -- 0.10 base per DECISIONS.md
 FROM student_accounts s
 LEFT JOIN student_verifications v ON v.student_id = s.id
 LEFT JOIN trust_weights w         ON w.factor = v.factor
