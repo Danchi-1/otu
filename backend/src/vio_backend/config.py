@@ -30,6 +30,9 @@ class Settings:
     challenge_max_attempts: int
     challenge_max_per_hour: int
     session_ttl_days: int
+    authority_session_secret: str | None = None
+    lecturer_session_secret: str | None = None
+    worker_secret: str | None = None
     api_prefix: str = "/api/v1"
     # Groq free-tier model panel. No paid fallback: if the key is missing or
     # Groq returns quota/auth errors, report intake fails closed.
@@ -38,7 +41,7 @@ class Settings:
     groq_timeout_seconds: float = 20.0
     groq_extractor_model: str = "openai/gpt-oss-20b"
     groq_safety_model: str = "openai/gpt-oss-safeguard-20b"
-    groq_consistency_model: str = "qwen/qwen3.8-27b"
+    groq_consistency_model: str = "qwen/qwen3-32b"
     groq_red_team_model: str = "openai/gpt-oss-120b"
     groq_summary_model: str = "openai/gpt-oss-20b"
     panel_min_confidence: float = 0.80
@@ -46,10 +49,15 @@ class Settings:
 
     @classmethod
     def from_environment(cls) -> "Settings":
+        db_url = os.getenv("DATABASE_URL") or os.getenv("DATABASE_URL_UNPOOLED")
+        sess_secret = os.getenv("SESSION_SECRET")
         return cls(
-            database_url=os.getenv("DATABASE_URL"),
+            database_url=db_url,
             identity_hash_secret=os.getenv("IDENTITY_HASH_SECRET"),
-            session_secret=os.getenv("SESSION_SECRET"),
+            session_secret=sess_secret,
+            authority_session_secret=os.getenv("AUTHORITY_SESSION_SECRET", sess_secret),
+            lecturer_session_secret=os.getenv("LECTURER_SESSION_SECRET", sess_secret),
+            worker_secret=os.getenv("WORKER_SECRET"),
             smtp_host=os.getenv("SMTP_HOST"),
             smtp_port=_int_env("SMTP_PORT", 587),
             smtp_username=os.getenv("SMTP_USERNAME"),
@@ -65,7 +73,7 @@ class Settings:
             groq_timeout_seconds=float(os.getenv("GROQ_TIMEOUT_SECONDS", "20")),
             groq_extractor_model=os.getenv("GROQ_EXTRACTOR_MODEL", "openai/gpt-oss-20b"),
             groq_safety_model=os.getenv("GROQ_SAFETY_MODEL", "openai/gpt-oss-safeguard-20b"),
-            groq_consistency_model=os.getenv("GROQ_CONSISTENCY_MODEL", "qwen/qwen3.8-27b"),
+            groq_consistency_model=os.getenv("GROQ_CONSISTENCY_MODEL", "qwen/qwen3-32b"),
             groq_red_team_model=os.getenv("GROQ_RED_TEAM_MODEL", "openai/gpt-oss-120b"),
             groq_summary_model=os.getenv("GROQ_SUMMARY_MODEL", "openai/gpt-oss-20b"),
             panel_min_confidence=float(os.getenv("PANEL_MIN_CONFIDENCE", "0.80")),
