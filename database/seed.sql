@@ -3,11 +3,11 @@
 -- Do not add guessed catalogue, student-domain, timetable, or contact data.
 -- Synthetic reports and delivery scenarios belong in isolated test fixtures, not this seed.
 
--- Tunables (decide real defaults later)
+-- Tunables (approved in docs/DECISIONS.md)
 INSERT INTO trust_weights (factor, weight) VALUES
-  ('school_email',   0.40),
-  ('phone_otp',      0.10),
-  ('timetable_match',0.30);
+  ('school_email',   0.55),
+  ('phone_otp',      0.00),
+  ('timetable_match',0.00);
 
 INSERT INTO platform_settings (key, value, note) VALUES
   ('min_supporters_tier1',  3,   'PLACEHOLDER: distinct students for public aggregate stats'),
@@ -70,7 +70,7 @@ FROM universities WHERE short_name = 'FUNAAB';
 INSERT INTO model_registry (role, provider, model, version, prompt_version) VALUES
   ('extractor',     'groq', 'openai/gpt-oss-20b',          'gpt-oss-20b',       'm3-intake-v1'),
   ('safety',        'groq', 'openai/gpt-oss-safeguard-20b', 'gpt-oss-safeguard','m3-intake-v1'),
-  ('consistency',   'groq', 'qwen/qwen3.8-27b',             'qwen3.8-27b',      'm5-panel-v1'),
+  ('consistency',   'groq', 'qwen/qwen3-32b',             'qwen3-32b',        'm5-panel-v1'),
   ('red_team',      'groq', 'openai/gpt-oss-120b',          'gpt-oss-120b',     'm5-panel-v1'),
   ('summary_check', 'groq', 'openai/gpt-oss-20b',          'gpt-oss-20b',      'm5-panel-v1')
 ON CONFLICT (role, provider, model, version, prompt_version) DO NOTHING;
