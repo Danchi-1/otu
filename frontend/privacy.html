@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8fb">
+  <meta name="description" content="VIO privacy and responsible reporting principles.">
+  <title>Privacy principles — VIO</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="app-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="preview-bar">
+    <span class="preview-bar__dot" aria-hidden="true"></span>
+    <span>Our principles</span>
+    <span class="preview-bar__divider" aria-hidden="true"></span>
+    <span>Privacy is part of the product, not an add-on.</span>
+  </div>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="VIO home">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M7 8.5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H15l-5.5 4v-4H7a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2Z" fill="currentColor"/><path d="m11 15.5 3.2 3.2 6.8-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>VIO<span class="brand__period">.</span></span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="primaryNav" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
+      <nav class="primary-nav" id="primaryNav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="about.html">Our approach</a>
+      </nav>
+      <a class="button button--small button--dark header-cta" href="sign-in.html">Student sign in</a>
+    </div>
+  </header>
+
+  <main class="app-main" id="main">
+    <p class="app-topline">Privacy & responsible reporting</p>
+    <h1 class="app-page-title">A voice platform should protect the people using it.</h1>
+    <p class="app-lead">These are the product boundaries VIO is designed to follow. This preview is not a substitute for a finalized privacy notice or legal advice.</p>
+
+    <div class="app-layout" style="margin-top: 30px">
+      <nav class="app-sidebar" aria-label="Privacy principles">
+        <p class="app-sidebar__label">On this page</p>
+        <a href="#identity"><span class="app-sidebar__icon">◉</span> Identity</a>
+        <a href="#claims"><span class="app-sidebar__icon">◇</span> Claims & review</a>
+        <a href="#public-data"><span class="app-sidebar__icon">▤</span> Public data</a>
+        <a href="#demo-data"><span class="app-sidebar__icon">i</span> This preview</a>
+      </nav>
+      <div class="app-content">
+        <section class="app-panel about-copy" id="identity">
+          <h2>Identity should stay private</h2>
+          <p>Student email is intended to verify eligibility. The backend stores a keyed identity hash rather than the raw email; the frontend must never put email addresses, account identifiers, or session tokens in public pages, URLs, analytics, or client logs.</p>
+        </section>
+        <section class="app-panel about-copy" id="claims" style="margin-top: 16px">
+          <h2>A report is a claim</h2>
+          <p>A report must not be presented as a verified fact or public accusation. The UI should display statuses supplied by the backend and use neutral language while a claim is being assessed.</p>
+        </section>
+        <section class="app-panel about-copy" id="public-data" style="margin-top: 16px">
+          <h2>Public information is aggregate-only</h2>
+          <p>The public dashboard must not expose report text, tracking codes, student identities, lecturer names, or individual supporter details. Groups smaller than the approved minimum of 20 students should be suppressed.</p>
+        </section>
+        <section class="app-panel about-copy" id="demo-data" style="margin-top: 16px">
+          <h2>This browser preview</h2>
+          <p>The sample report interaction runs only in your browser. It sends nothing to the API, does not persist entered content, and does not issue a real tracking code. Please do not enter real personal or sensitive information.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a class="brand brand--footer" href="index.html" aria-label="VIO home"><span>VIO<span class="brand__period">.</span></span></a>
+      <p>Every student deserves to be heard.</p>
+      <a class="footer-preview" href="about.html">Our approach</a>
+    </div>
+  </footer>
+  <script src="js/config.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

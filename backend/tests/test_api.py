@@ -10,6 +10,22 @@ def test_liveness_is_available_without_database():
     assert response.json() == {"status": "alive"}
 
 
+def test_cors_preflight_allows_local_frontend_with_credentials():
+    origin = "http://127.0.0.1:5500"
+    with TestClient(app) as client:
+        response = client.options(
+            "/api/v1/auth/student/email-challenges",
+            headers={
+                "Origin": origin,
+                "Access-Control-Request-Method": "POST",
+                "Access-Control-Request-Headers": "content-type",
+            },
+        )
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == origin
+    assert response.headers["access-control-allow-credentials"] == "true"
+
+
 def test_readiness_fails_closed_without_database_configuration():
     with TestClient(app) as client:
         response = client.get("/health/ready")

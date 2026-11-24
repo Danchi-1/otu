@@ -1,123 +1,107 @@
+(function () {
+    var menuToggle = document.getElementById("menuToggle");
+    var primaryNav = document.getElementById("primaryNav");
 
-console.log("VIO is running!");
+    function setMenuOpen(open) {
+        if (!menuToggle || !primaryNav) return;
 
-const reportForm = document.getElementById("reportForm");
-const formMessage = document.getElementById("formMessage");
-const reportList = document.getElementById("reportList");
-
-const totalDisplay = document.getElementById("totalReports");
-const pendingDisplay = document.getElementById("pendingReports");
-const reviewedDisplay = document.getElementById("reviewedReports");
-
-localStorage.removeItem("vioReports");
-
-let reports = [];
-
-// Reusable API function for future backend integration
-async function vioApi(endpoint, options = {}) {
-    const base = window.VIO_CONFIG.API_BASE_URL;
-    const prefix = window.VIO_CONFIG.API_PREFIX;
-
-    if (!base) {
-        throw new Error("Backend URL has not been configured.");
+        menuToggle.classList.toggle("is-open", open);
+        primaryNav.classList.toggle("is-open", open);
+        menuToggle.setAttribute("aria-expanded", String(open));
+        menuToggle.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
     }
 
-    const response = await fetch(`${base}${prefix}${endpoint}`, {
-        ...options,
-        credentials: "include",
-        headers: {
-            "Content-Type": "application/json",
-            ...options.headers
+    if (menuToggle && primaryNav) {
+        menuToggle.addEventListener("click", function () {
+            setMenuOpen(menuToggle.getAttribute("aria-expanded") !== "true");
+        });
+
+        primaryNav.querySelectorAll("a").forEach(function (link) {
+            link.addEventListener("click", function () {
+                setMenuOpen(false);
+            });
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") setMenuOpen(false);
+        });
+
+        window.addEventListener("resize", function () {
+            if (window.innerWidth > 740) setMenuOpen(false);
+        });
+    }
+
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduceMotion && "IntersectionObserver" in window) {
+        var revealItems = document.querySelectorAll(".step-card, .dashboard-preview, .privacy-card, .form-card");
+        if (revealItems.length > 0) {
+            document.documentElement.classList.add("vio-scroll-ready");
+            var revealObserver = new IntersectionObserver(function (entries, observer) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add("is-visible");
+                    observer.unobserve(entry.target);
+                });
+            }, { threshold: 0.12 });
+
+            revealItems.forEach(function (item) {
+                item.classList.add("reveal-on-scroll");
+                revealObserver.observe(item);
+            });
+        }
+    }
+
+    var form = document.getElementById("reportForm");
+    var description = document.getElementById("description");
+    var incidentDate = document.getElementById("incidentDate");
+    var characterCount = document.getElementById("characterCount");
+    var formMessage = document.getElementById("formMessage");
+    var previewButton = document.getElementById("previewButton");
+    var demoEnabled = window.VIO_CONFIG && window.VIO_CONFIG.mode === "demo";
+
+    if (!form || !description || !characterCount || !formMessage || !previewButton || !demoEnabled) return;
+
+    function localDateString(date) {
+        var year = date.getFullYear();
+        var month = String(date.getMonth() + 1).padStart(2, "0");
+        var day = String(date.getDate()).padStart(2, "0");
+        return year + "-" + month + "-" + day;
+    }
+
+    function updateCharacterCount() {
+        characterCount.textContent = description.value.length.toLocaleString("en") + " / 2,000";
+    }
+
+    if (incidentDate) {
+        incidentDate.max = localDateString(new Date());
+    }
+
+    updateCharacterCount();
+    description.addEventListener("input", updateCharacterCount);
+
+    form.addEventListener("input", function () {
+        if (!formMessage.hidden) {
+            formMessage.hidden = true;
+            formMessage.textContent = "";
         }
     });
 
-    const result = await response.json();
+    previewButton.addEventListener("click", function () {
+        var invalidField = form.querySelector(":invalid");
+        if (invalidField) {
+            invalidField.reportValidity();
+            return;
+        }
 
-    if (!response.ok) {
-        throw new Error(result.message || "Request failed");
-    }
+        if (description.value.trim().length < 20) {
+            description.setCustomValidity("Please enter at least 20 non-space characters.");
+            description.reportValidity();
+            description.setCustomValidity("");
+            return;
+        }
 
-    return result;
-}
-
-function updateDashboard() {
-    totalDisplay.textContent = reports.length;
-    pendingDisplay.textContent = reports.length;
-    reviewedDisplay.textContent = 0;
-}
-
-function displayReports() {
-    reportList.innerHTML = "";
-
-    if (reports.length === 0) {
-        reportList.textContent = "No reports submitted yet.";
-        return;
-    }
-
-    reports.forEach(function(report) {
-        const item = document.createElement("article");
-        item.className = "report-item";
-
-        const heading = document.createElement("h3");
-        heading.textContent = report.category;
-
-        const course = document.createElement("p");
-        course.textContent = "Course: " + (report.course || "Not specified");
-
-        const date = document.createElement("p");
-        date.textContent = "Incident date: " + report.date;
-
-        const description = document.createElement("p");
-        description.textContent = report.description;
-
-        const status = document.createElement("small");
-        status.className = "review-status";
-        status.textContent = "Pending Review";
-
-        item.append(heading, course, date, description, status);
-        reportList.appendChild(item);
+        formMessage.textContent =
+            "Demo preview complete. Nothing was sent or saved. In a live VIO service, a report would be assessed before any tracking status is shown.";
+        formMessage.hidden = false;
     });
-}
-
-updateDashboard();
-displayReports();
-
-reportForm.addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const category = document.getElementById("category").value;
-    const course = document.getElementById("course").value.trim();
-    const date = document.getElementById("incidentDate").value;
-    const description = document.getElementById("description").value.trim();
-
-    if (description.length < 20) {
-        formMessage.textContent = "Please provide at least 20 characters.";
-        return;
-    }
-
-    const newReport = {
-        category: category,
-        course: course,
-        date: date,
-        description: description,
-        submittedAt: new Date().toISOString()
-    };
-
-    reports.unshift(newReport);
-
-    try {
-        localStorage.setItem("vioReports", JSON.stringify(reports));
-    } catch (error) {
-        formMessage.textContent = "Unable to save this demo report in your browser.";
-        reports.shift();
-        return;
-    }
-
-    updateDashboard();
-    displayReports();
-
-    formMessage.textContent =
-        "Your report has been received for this demonstration!";
-
-    reportForm.reset();
-});
+})();

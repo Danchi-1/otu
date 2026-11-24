@@ -4,7 +4,26 @@
 
 VIO contains both backend and frontend areas in this repository. Frontend developers own implementation under `frontend/`; this backend work must produce the contract they integrate with. The target is a real service, not a demo-only frontend or demo dataset. School integrations may block official catalogue/registration data; represent that as unavailable rather than fabricating production records.
 
-The detailed browser routes and screen-by-screen interactions are in [FRONTEND_FLOWS.md](FRONTEND_FLOWS.md). The concrete API path and payload proposal is in [ENDPOINT_PROPOSAL.md](../api/ENDPOINT_PROPOSAL.md). Endpoint names are proposals for us to agree together, not a frozen contract yet.
+The detailed browser routes and screen-by-screen interactions are in [FRONTEND_FLOWS.md](FRONTEND_FLOWS.md). The API proposal in [ENDPOINT_PROPOSAL.md](../api/ENDPOINT_PROPOSAL.md) remains guidance for workflows not yet implemented; the active student routes in `backend/src/vio_backend/routers/` define the current contract.
+
+## Current Frontend Status
+
+The frontend is framework-free HTML, CSS, and JavaScript. The public home, dashboard preview, approach, and privacy pages are separate screens. Student sign-in, profile/session/course setup, the private student space, report submission, and report status are wired to the active `/api/v1` backend.
+
+The public dashboard still has no aggregate-data endpoint and intentionally shows no live or sample statistics. Timetable upload, student confirmations, lecturer workflows, authority delivery, and public dashboard data are not implemented in the active backend; the frontend must not present them as working features. Report intake also depends on the configured model panel and fails closed with a server error when that service is unavailable. The older homepage sample interaction, if shown, is local-only and does not create or save a report.
+
+The endpoint proposal remains a guide for routes that are not implemented. For the student flows listed above, follow the active router behavior and response envelopes instead of treating proposed endpoints as available.
+
+### Run the frontend locally
+
+From the repository root, serve the static frontend on port 5500:
+
+```powershell
+Set-Location frontend
+python -m http.server 5500
+```
+
+Open `http://127.0.0.1:5500`. The frontend API base defaults to `http://127.0.0.1:8000` and may be overridden with `window.VIO_API_BASE_URL` before the page scripts load. The backend must be running separately with its database and required environment variables configured. Its `FRONTEND_ORIGINS` allowlist must include the exact frontend origin (the default includes both `http://127.0.0.1:5500` and `http://localhost:5500`). Real email verification requires working SMTP settings; report acceptance requires working Groq credentials and configured panel models. Never copy secrets into frontend files.
 
 ## User-Facing Flows
 
@@ -13,7 +32,7 @@ The detailed browser routes and screen-by-screen interactions are in [FRONTEND_F
 - Show aggregate accountability statistics only.
 - Show only published aggregate output; held, disputed, or merely cleared findings must not appear as public individual items.
 - Never display lecturer names, student identities, report text, tracking codes, or individual reporter/confirmation records.
-- Omit groups below the approved minimum. The minimum is still undecided; do not hardcode the current seed placeholder as policy.
+- Omit groups below the approved 20-student minimum. The public aggregate endpoint and its denominator are not implemented yet, so show no figures until both are available.
 
 ### Student
 

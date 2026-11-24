@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8fb">
+  <meta name="description" content="Submit a factual academic report through VIO.">
+  <title>File a report — VIO</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="app-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="preview-bar">
+    <span class="preview-bar__dot" aria-hidden="true"></span>
+    <span>Private student space</span>
+    <span class="preview-bar__divider" aria-hidden="true"></span>
+    <span>A report is a claim, not an established finding.</span>
+  </div>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="VIO home">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M7 8.5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H15l-5.5 4v-4H7a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2Z" fill="currentColor"/><path d="m11 15.5 3.2 3.2 6.8-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>VIO<span class="brand__period">.</span></span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="primaryNav" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
+      <nav class="primary-nav" id="primaryNav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="about.html">Our approach</a>
+      </nav>
+      <a class="button button--small button--dark header-cta" href="student.html">My VIO</a>
+    </div>
+  </header>
+
+  <main class="app-main" id="main">
+    <p class="app-topline">Your VIO · Report</p>
+    <div class="app-title-row">
+      <div>
+        <h1>Tell us what happened.</h1>
+        <p>Share a factual account about one of your selected courses. Your report stays private to your account.</p>
+      </div>
+      <a class="app-link" href="student.html">← Back to your space</a>
+    </div>
+
+    <div class="app-alert app-alert--error" id="reportError" role="alert" hidden></div>
+    <div class="app-alert app-alert--success" id="reportNotice" role="status" aria-live="polite" hidden></div>
+
+    <section class="app-panel report-panel" id="reportLoading" aria-live="polite">
+      <div class="app-empty">
+        <span class="app-empty__icon" aria-hidden="true">…</span>
+        <h2>Checking your report options</h2>
+        <p>VIO is loading your registered courses and the current reporting rules.</p>
+      </div>
+    </section>
+
+    <section class="app-panel report-panel" id="reportUnavailable" hidden>
+      <div class="app-empty">
+        <span class="app-empty__icon" aria-hidden="true">!</span>
+        <h2 id="unavailableTitle">Reporting is not available</h2>
+        <p id="unavailableMessage">VIO could not load report options for this account.</p>
+        <a class="button button--primary report-action" id="unavailableAction" href="student.html">Go to your student space</a>
+      </div>
+    </section>
+
+    <section class="app-panel report-panel" id="reportFormPanel" hidden aria-labelledby="reportFormHeading">
+      <div class="app-panel__heading">
+        <div>
+          <h2 id="reportFormHeading">Report details</h2>
+          <p id="reportSession"></p>
+        </div>
+        <span class="app-status app-status--gold">Private · Unverified claim</span>
+      </div>
+      <div class="app-panel__body">
+        <div class="privacy-note report-privacy">
+          Keep your account of this incident factual and specific. VIO checks submissions for safety and consistency before accepting them. Do not include names or private details about other people.
+        </div>
+        <form class="app-form report-form" id="reportForm" novalidate>
+          <div class="app-form__grid">
+            <div class="field">
+              <label for="course">Course</label>
+              <select id="course" name="course_id" required>
+                <option value="">Choose one of your selected courses</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="category">Type of concern</label>
+              <select id="category" name="category" required>
+                <option value="">Choose the closest category</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="incidentDate">Date of the incident</label>
+              <input id="incidentDate" name="incident_date" type="date" required>
+              <p class="form-help" id="dateHint">The server checks whether this date is valid for the category.</p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="description">What happened?</label>
+            <textarea id="description" name="description" required aria-describedby="descriptionHint descriptionCounter" placeholder="Describe one incident in your own words. Include what happened and when, but avoid names or speculation."></textarea>
+            <div class="report-field-meta">
+              <p class="form-help" id="descriptionHint"></p>
+              <span class="form-help" id="descriptionCounter" aria-live="polite"></span>
+            </div>
+          </div>
+          <div class="app-form__actions">
+            <button class="button button--primary" id="reviewReport" type="submit">Review report →</button>
+            <a class="text-link" href="student.html">Cancel</a>
+          </div>
+        </form>
+
+        <section class="report-review" id="reportReview" aria-labelledby="reviewHeading" hidden>
+          <div class="report-review__heading">
+            <span class="app-status app-status--teal">Review before sending</span>
+            <h2 id="reviewHeading" tabindex="-1">Check your details.</h2>
+            <p>A report is a claim, not a finding. Make sure your account is accurate and factual.</p>
+          </div>
+          <dl class="report-review__details">
+            <div><dt>Course</dt><dd id="reviewCourse"></dd></div>
+            <div><dt>Concern</dt><dd id="reviewCategory"></dd></div>
+            <div><dt>Incident date</dt><dd id="reviewDate"></dd></div>
+            <div class="report-review__description"><dt>Your account</dt><dd id="reviewDescription"></dd></div>
+          </dl>
+          <div class="app-form__actions">
+            <button class="button button--primary" id="submitReport" type="button">Submit private report</button>
+            <button class="text-link" id="editReport" type="button">Edit details</button>
+          </div>
+        </section>
+
+        <section class="report-success" id="reportSuccess" aria-labelledby="successHeading" aria-live="polite" tabindex="-1" hidden>
+          <span class="app-empty__icon" aria-hidden="true">✓</span>
+          <span class="app-status app-status--teal">Report received</span>
+          <h2 id="successHeading">Your report is in.</h2>
+          <p id="successMessage">It has not been established as a finding. Keep this private tracking code to revisit your report.</p>
+          <div class="report-success__code">
+            <span class="form-help">Your private tracking code</span>
+            <output class="tracking-code" id="trackingCode"></output>
+            <button class="text-link" id="copyTrackingCode" type="button">Copy code</button>
+          </div>
+          <a class="button button--primary" id="viewTracking" href="tracking.html">View report status →</a>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <a class="brand brand--footer" href="index.html" aria-label="VIO home"><span>VIO<span class="brand__period">.</span></span></a>
+      <p>Every student deserves to be heard.</p>
+      <a class="footer-preview" href="privacy.html">Privacy principles</a>
+    </div>
+  </footer>
+  <script src="js/config.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/report.js"></script>
+</body>
+</html>
