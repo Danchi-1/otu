@@ -8,7 +8,13 @@ from vio_backend.delivery_store import (
     generate_delivery_token,
     hash_token,
     process_overdue_escalations,
+    redeem_delivery_token,
     save_lecturer_reply,
+)
+from vio_backend.link_auth import (
+    create_authority_session_token,
+    create_lecturer_session_token,
+    verify_signed_token,
 )
 
 
@@ -17,6 +23,105 @@ def test_token_generation_and_hashing():
     assert len(raw) >= 32
     assert len(hashed) == 32
     assert hash_token(raw) == hashed
+
+
+def test_authority_and_lecturer_signed_sessions():
+    secret = "test-secret-12345"
+    auth_token = create_authority_session_token(
+        secret,
+        authority_id="auth-1",
+        delivery_id="deliv-1",
+        role="hod",
+        ttl_hours=1,
+    )
+    payload = verify_signed_token(secret, auth_token)
+    assert payload is not None
+    assert payload["authority_id"] == "auth-1"
+    assert payload["delivery_id"] == "deliv-1"
+    assert payload["role"] == "hod"
+
+    # Tampered signature fails
+    assert verify_signed_token("wrong-secret", auth_token) is None
+    assert verify_signed_token(secret, auth_token + "tamper") is None
+
+    # Lecturer session
+    lec_token = create_lecturer_session_token(
+        secret,
+        lecturer_id="lec-1",
+        email="prof@funaab.edu.ng",
+        department_id="dept-1",
+        ttl_hours=1,
+    )
+    lec_payload = verify_signed_token(secret, lec_token)
+    assert lec_payload is not None
+    assert lec_payload["lecturer_id"] == "lec-1"
+    assert lec_payload["email"] == "prof@funaab.edu.ng"
+
+
+@pytest.mark.asyncio
+async def test_redeem_delivery_token_expired():
+    session = AsyncMock()
+    mock_row = MagicMock()
+    mock_row._mapping = {
+        "delivery_id": "d1",
+        "finding_id": "f1",
+        "authority_id": "a1",
+        "step_order": 1,
+        "status": "sent",
+        "due_at": datetime.now(timezone.utc) - timedelta(hours=1),  # Expired!
+        "viewed_at": None,
+        "acknowledged_at": None,
+        "responded_at": None,
+        "authority_role": "hod",
+        "authority_name": "Dr. Ade",
+        "category": "class_not_held",
+        "incident_date": date(2026, 10, 1),
+        "clearance_tier": 1,
+        "public_summary": "Summary",
+        "course_code": "MTS201",
+        "course_title": "Calculus",
+        "department_name": "Math",
+    }
+    mock_res = MagicMock()
+    mock_res.first.return_value = mock_row
+    session.execute.return_value = mock_res
+
+    data, err = await redeem_delivery_token(session, "a" * 32)
+    assert data is None
+    assert err == "expired_link"
+
+
+@pytest.mark.asyncio
+async def test_redeem_delivery_token_already_used():
+    session = AsyncMock()
+    mock_row = MagicMock()
+    mock_row._mapping = {
+        "delivery_id": "d1",
+        "finding_id": "f1",
+        "authority_id": "a1",
+        "step_order": 1,
+        "status": "viewed",
+        "due_at": datetime.now(timezone.utc) + timedelta(days=5),
+        "viewed_at": datetime.now(timezone.utc) - timedelta(hours=2),  # Already viewed!
+        "acknowledged_at": None,
+        "responded_at": None,
+        "authority_role": "hod",
+        "authority_name": "Dr. Ade",
+        "category": "class_not_held",
+        "incident_date": date(2026, 10, 1),
+        "clearance_tier": 1,
+        "public_summary": "Summary",
+        "course_code": "MTS201",
+        "course_title": "Calculus",
+        "department_name": "Math",
+    }
+    mock_res = MagicMock()
+    mock_res.first.return_value = mock_row
+    session.execute.return_value = mock_res
+
+    data, err = await redeem_delivery_token(session, "a" * 32)
+    assert data is None
+    assert err == "link_already_used"
 
 
 def test_assess_reply_dispute_refers_to_appeals():
