@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 
+from vio_backend.link_auth import create_lecturer_session_token
 from vio_backend.main import app
 
 
@@ -134,27 +135,48 @@ def test_confirm_finding_fails_closed_without_database_configuration():
     assert response.json()["error"]["code"] == "service_unavailable"
 
 
-def test_stage6_dev_router_health_endpoint():
-    with TestClient(app) as client:
-        response = client.get("/lecturer-replies/health")
-    assert response.status_code == 200
-    assert response.json()["status"] == "ok"
-    assert response.json()["module"] == "Vio Stage 6"
-
-
-def test_post_class_notice_fails_closed_without_database():
+def test_post_class_notice_requires_lecturer_authentication():
     with TestClient(app) as client:
         response = client.post(
             "/api/v1/lecturer/class-notices",
             json={
                 "course_id": "00000000-0000-0000-0000-000000000000",
-                "lecturer_id": "00000000-0000-0000-0000-000000000000",
+                "kind": "cancelled",
+                "for_date": "2026-10-12",
+            },
+        )
+    assert response.status_code == 401
+    assert response.json()["error"]["code"] == "unauthenticated"
+
+
+def test_post_class_notice_fails_closed_without_database_when_authenticated():
+    token = create_lecturer_session_token(
+        "insecure-dev-lecturer-secret",
+        lecturer_id="00000000-0000-0000-0000-000000000000",
+        email="prof@funaab.edu.ng",
+        department_id="00000000-0000-0000-0000-000000000000",
+    )
+    with TestClient(app) as client:
+        response = client.post(
+            "/api/v1/lecturer/class-notices",
+            headers={"Authorization": f"Bearer {token}"},
+            json={
+                "course_id": "00000000-0000-0000-0000-000000000000",
                 "kind": "cancelled",
                 "for_date": "2026-10-12",
             },
         )
     assert response.status_code == 503
     assert response.json()["error"]["code"] == "service_unavailable"
+
+
+def test_authority_endpoints_require_authority_authentication():
+    with TestClient(app) as client:
+        response = client.post(
+            "/api/v1/authority/deliveries/00000000-0000-0000-0000-000000000000/acknowledgement"
+        )
+    assert response.status_code == 401
+    assert response.json()["error"]["code"] == "unauthenticated"
 
 
 def test_authority_access_fails_closed_without_database():
