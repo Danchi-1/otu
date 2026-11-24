@@ -243,12 +243,22 @@ async def queue_delivery_for_step(
     return delivery_id, raw_token
 
 
-async def redeem_delivery_token(session: AsyncSession, raw_token: str) -> dict | None:
-    """Redeems a secure delivery link token and returns authorized details."""
+async def redeem_delivery_token(session: AsyncSession, raw_token: str) -> tuple[dict | None, str | None]:
+    """Redeems a secure, one-time delivery link token and returns authorized details.
+    
+    Enforces:
+    - Expiration: tokens cannot be redeemed after due_at.
+    - Single-use: once redeemed, the raw link token cannot be reused.
+    
+    Returns (delivery_data, None) on success, or (None, error_code):
+    - 'not_found'
+    - 'expired_link'
+    - 'link_already_used'
+    """
     token_hash = hash_token(raw_token)
     query = """
         SELECT d.id AS delivery_id, d.finding_id, d.authority_id, d.step_order, d.status,
-               d.due_at, d.acknowledged_at, d.responded_at,
+               d.due_at, d.viewed_at, d.acknowledged_at, d.responded_at,
                a.role AS authority_role, a.full_name AS authority_name,
                f.category, f.incident_date, f.clearance_tier, f.public_summary,
                c.code AS course_code, c.title AS course_title,
@@ -263,19 +273,32 @@ async def redeem_delivery_token(session: AsyncSession, raw_token: str) -> dict |
     res = await session.execute(text(query), {"token_hash": token_hash})
     row = res.first()
     if row is None:
-        return None
+        return None, "not_found"
 
     data = dict(row._mapping)
 
-    # Mark viewed_at if first time viewing
-    if data["status"] in ("queued", "sent"):
-        await session.execute(
-            text("UPDATE deliveries SET status = 'viewed', viewed_at = COALESCE(viewed_at, now()) WHERE id = :id"),
-            {"id": data["delivery_id"]},
-        )
-        data["status"] = "viewed"
+    # Check expiry
+    due_at = data.get("due_at")
+    if due_at:
+        from datetime import datetime, timezone
+        now_utc = datetime.now(timezone.utc)
+        if due_at.tzinfo is None:
+            now_utc = datetime.utcnow()
+        if due_at < now_utc:
+            return None, "expired_link"
 
-    return data
+    # Check one-time link redemption
+    if data.get("viewed_at") is not None or data["status"] not in ("queued", "sent"):
+        return None, "link_already_used"
+
+    # Mark viewed_at and transition status to viewed
+    await session.execute(
+        text("UPDATE deliveries SET status = 'viewed', viewed_at = now() WHERE id = :id"),
+        {"id": data["delivery_id"]},
+    )
+    data["status"] = "viewed"
+
+    return data, None
 
 
 async def acknowledge_delivery(session: AsyncSession, delivery_id: str) -> bool:
