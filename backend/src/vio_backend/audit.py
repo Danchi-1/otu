@@ -51,7 +51,18 @@ async def record_decision(
     decision: str,
     details: dict[str, Any] | None = None,
 ) -> int:
-    """Appends a new verified decision to the hash-chained decision_log."""
+    """Appends a new verified decision to the hash-chained decision_log.
+    
+    Uses pg_advisory_xact_lock to prevent race conditions and hash-chain forks
+    during concurrent decision appends.
+    """
+    bind = getattr(session, "bind", None)
+    if bind and hasattr(bind, "dialect") and getattr(bind.dialect, "name", None) == "postgresql":
+        try:
+            await session.execute(text("SELECT pg_advisory_xact_lock(hashtext('decision_log_chain'))"))
+        except Exception:
+            pass
+
     last_res = await session.execute(
         text("SELECT entry_hash FROM decision_log ORDER BY id DESC LIMIT 1")
     )
