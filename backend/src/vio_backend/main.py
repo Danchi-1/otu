@@ -5,7 +5,6 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from backend.src.api.lecturer_reply_api import router as stage6_dev_router
 from vio_backend.config import Settings
 from vio_backend.database import make_engine, make_session_factory
 from vio_backend.errors import register_error_handlers
@@ -41,7 +40,7 @@ app.add_middleware(
     allow_origins=frontend_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Idempotency-Key"],
+    allow_headers=["Content-Type", "Idempotency-Key", "Authorization", "X-Worker-Secret"],
 )
 register_error_handlers(app)
 app.include_router(catalogue.router)
@@ -52,7 +51,6 @@ app.include_router(findings.router)
 app.include_router(lecturer.router)
 app.include_router(authority.router)
 app.include_router(dashboard.router)
-app.include_router(stage6_dev_router)
 
 
 @app.get("/health/live", tags=["health"])
